@@ -7,6 +7,12 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/analytics";
 
+// This element is connected to the Redux store.
+import { store } from '../store.js';
+
+// These are the actions needed by this element.
+import { update } from '../actions/user.js';
+
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDadWj8aO7YdZDCEmOijVRZkejjyva74nM",
@@ -27,6 +33,8 @@ firebaseDefault.analytics();
 // Auth Changed
 firebaseDefault.auth().onAuthStateChanged(async user => {
   console.log("onAuthStateChanged", user);
+  store.dispatch(update());
+
   if (user && user.uid) {
     window.location = "/view2"
   }

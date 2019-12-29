@@ -1,6 +1,20 @@
 import { html, customElement, property } from 'lit-element';
 import { PageViewElement } from './page-view-element.js';
 
+import { connect } from 'pwa-helpers/connect-mixin.js';
+
+// This element is connected to the Redux store.
+import { store, RootState } from '../store.js';
+
+// These are the actions needed by this element.
+import { update } from '../actions/user.js';
+
+// We are lazy loading its reducer.
+import user from '../reducers/user.js';
+store.addReducers({
+  user
+});
+
 // These are the shared styles needed by this element.
 import { SharedStyles } from './shared-styles.js';
 
@@ -11,9 +25,12 @@ import firebase from "../utils/firebase.js";
 import '../utils/loading-image.js';
 
 @customElement('login-page')
-export class LoginPage extends PageViewElement {
+export class LoginPage extends connect(store)(PageViewElement) {
   @property({ type: String })
   loadingDisplay = 'block';
+
+  @property({ type: Object })
+  user = {};
 
   static get styles() {
     return [
@@ -44,5 +61,10 @@ export class LoginPage extends PageViewElement {
     firebase
       .auth()
       .signInWithRedirect(provider);
+  }
+
+  // This is called every time something is updated in the store.
+  stateChanged(state: RootState) {
+    console.log('State Changed', state);
   }
 }
