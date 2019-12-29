@@ -19,9 +19,18 @@ const firebaseConfig = {
   measurementId: "G-ZJWL965080"
 };
 
-console.log('firebase', firebase.default);
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+const firebaseDefault = firebase.default;
+firebaseDefault.initializeApp(firebaseConfig);
+firebaseDefault.analytics();
 
-export default firebase;
+// Auth Changed
+firebaseDefault.auth().onAuthStateChanged(async user => {
+  console.log("onAuthStateChanged", user);
+  if(user && user.uid){
+    console.log('uid', user.uid);    
+    window.location = "/view2"
+  }
+}
+
+export default firebaseDefault;
