@@ -8,6 +8,7 @@ import { store, RootState } from '../store.js';
 
 // These are the actions needed by this element.
 import { update } from '../actions/user.js';
+import { navigate } from '../actions/app.js';
 
 // We are lazy loading its reducer.
 import user from '../reducers/user.js';
@@ -60,8 +61,8 @@ export class TopPage extends connect(store)(PageViewElement) {
   stateChanged(state: RootState) {
     console.log('State Changed', state);
     this.setAttribute('loadingDisplay', 'none');
-    if(!state.user || !state.user.uid){
-      // window.location = '/login';
+    if((state.app.page !== "login") && (!state.user || !state.user.uid)){
+      store.dispatch(navigate("/login"));
     }
 
   }

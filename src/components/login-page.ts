@@ -35,9 +35,6 @@ export class LoginPage extends connect(store)(PageViewElement) {
   @property({ type: Object })
   user = {};
 
-  @property({type: String})
-  private _page = 'login';
-
   static get styles() {
     return [
       SharedStyles
