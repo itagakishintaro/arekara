@@ -12,6 +12,7 @@ import { store } from '../store.js';
 
 // These are the actions needed by this element.
 import { update } from '../actions/user.js';
+import { navigate } from '../actions/app.js';
 
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
@@ -33,10 +34,9 @@ firebaseDefault.analytics();
 // Auth Changed
 firebaseDefault.auth().onAuthStateChanged(async user => {
   console.log("onAuthStateChanged", user);
-  store.dispatch(update());
-
   if (user && user.uid) {
-    window.location = "/view2"
+    store.dispatch(update(user));
+    store.dispatch(navigate("/top"));
   }
 }
 

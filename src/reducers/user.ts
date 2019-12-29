@@ -11,7 +11,8 @@ const INITIAL_STATE: UserState = {};
 const user: Reducer<UserState, RootAction> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case UPDATE:
-      return state;
+      console.log("state, action", state, action);
+      return action.user;
     default:
       return state;
   }

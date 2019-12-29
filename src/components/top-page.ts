@@ -9,9 +9,6 @@ import { store, RootState } from '../store.js';
 // These are the actions needed by this element.
 import { update } from '../actions/user.js';
 
-// page
-import { navigate } from '../actions/app.js';
-
 // We are lazy loading its reducer.
 import user from '../reducers/user.js';
 store.addReducers({
@@ -27,16 +24,13 @@ import firebase from "../utils/firebase.js";
 // loading
 import '../utils/loading-image.js';
 
-@customElement('login-page')
-export class LoginPage extends connect(store)(PageViewElement) {
+@customElement('top-page')
+export class TopPage extends connect(store)(PageViewElement) {
   @property({ type: String })
   loadingDisplay = 'block';
 
   @property({ type: Object })
   user = {};
-
-  @property({type: String})
-  private _page = 'login';
 
   static get styles() {
     return [
@@ -47,23 +41,28 @@ export class LoginPage extends connect(store)(PageViewElement) {
   protected render() {
     return html`
       <section>
-        <button @click="${this._googleLogin}">Google でログイン</buttion>
+        <button @click="${this._openRoutineRegister}">追加</buttion>
       </section>
 
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
     `
   }
 
-  private _googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase
-      .auth()
-      .signInWithRedirect(provider);
+  constructor() {
+    super();
+  }
+
+  private _openRoutineRegister() {
+    console.log('_openRoutineRegister');
   }
 
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
     console.log('State Changed', state);
     this.setAttribute('loadingDisplay', 'none');
+    if(!state.user || !state.user.uid){
+      // window.location = '/login';
+    }
+
   }
 }

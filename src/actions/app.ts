@@ -46,8 +46,8 @@ const loadPage: ActionCreator<ThunkResult> = (page: string) => (dispatch) => {
         // navigating to login after login.js is loaded.
       });
       break;
-    case 'view2':
-      import('../components/my-view2.js');
+    case 'top':
+      import('../components/top-page.js');
       break;
     case 'view3':
       import('../components/my-view3.js');

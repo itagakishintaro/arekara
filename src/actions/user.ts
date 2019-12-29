@@ -4,8 +4,9 @@ export const UPDATE = 'UPDATE';
 export interface UserActionUpdate extends Action<'UPDATE'> {};
 export type UserAction = UserActionUpdate;
 
-export const update: ActionCreator<UserActionUpdate> = () => {
+export const update: ActionCreator<UserActionUpdate> = user => {
   return {
-    type: UPDATE
+    type: UPDATE,
+    user
   };
 };
