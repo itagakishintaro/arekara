@@ -27,8 +27,7 @@ firebaseDefault.analytics();
 // Auth Changed
 firebaseDefault.auth().onAuthStateChanged(async user => {
   console.log("onAuthStateChanged", user);
-  if(user && user.uid){
-    console.log('uid', user.uid);    
+  if (user && user.uid) {
     window.location = "/view2"
   }
 }
