@@ -14,6 +14,9 @@ store.addReducers({
 // These are the shared styles needed by this element.
 import { SharedStyles } from './shared-styles.js';
 
+// Firebase
+import firebase from "../utils/firebase.js";
+
 // compornents
 import '../utils/loading-image.js';
 import '@polymer/iron-collapse/iron-collapse.js';
@@ -84,11 +87,17 @@ export class RoutineItem extends connect(store)(LitElement) {
   }
 
   private fromLastDay(records){
+    if(!records || !Object.keys(records)){
+      return;
+    }
     const lastDay = Object.keys(records).reduce( (pre, cur) => pre < cur? cur: pre, '' );
     return moment().diff(moment(lastDay), 'days');
   }
 
   private calcPace(r){
+    if(!r || !r.records){
+      return;
+    }
     const firstDay = Object.keys(r.records).reduce( (pre, cur) => pre > cur? cur: pre, moment().format() );
     const fromFirstDay = moment().diff(moment(firstDay), 'days');
     const times = Object.keys(r.records).length;
@@ -118,6 +127,12 @@ export class RoutineItem extends connect(store)(LitElement) {
   }
 
   private record(){
-    console.log("record");
+    const datetime = moment().format();
+    firebase.firestore()
+      .collection('users')
+      .doc(this.user.uid)
+      .collection('routines')
+      .doc(this.routine.id)
+      .set( {records: {[datetime]: true} }, { merge: true } );
   }
 }

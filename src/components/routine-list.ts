@@ -72,7 +72,7 @@ export class RoutineList extends connect(store)(LitElement) {
         if(snapshot.empty){
           return;
         }
-        this.routines = snapshot.docs.map(doc => doc.data());
+        this.routines = snapshot.docs.map(doc => Object.assign(doc.data(), {id: doc.id}));
     });
   }
 }
