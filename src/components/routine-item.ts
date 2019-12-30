@@ -16,6 +16,7 @@ import { SharedStyles } from './shared-styles.js';
 
 // compornents
 import '../utils/loading-image.js';
+import '@polymer/iron-collapse/iron-collapse.js';
 
 @customElement('routine-item')
 export class RoutineItem extends connect(store)(LitElement) {
@@ -39,8 +40,11 @@ export class RoutineItem extends connect(store)(LitElement) {
   protected render() {
     return html`
       <div>
-          <div>${ this.routine.name }</div>
+          <div @click="${ this.toggleCollapse }">${ this.routine.name }</div>
           <div>${ this.spanShortName(this.routine.span) } ${ this.routine.frequency }ペース</div>
+          <iron-collapse id="collapse" opend="false">
+            <button @click="${this.record}">Record</button>
+          </iron-collapse>
           <div>${ this.fromLastDay(this.routine.records) }</div>
           <div>${ this.calcPace(this.routine) }</div>
       </div>
@@ -107,5 +111,13 @@ export class RoutineItem extends connect(store)(LitElement) {
         break
     }
     return times / (fromFirstDay + 1) * span;
+  }
+
+  private toggleCollapse() {
+    this.shadowRoot.getElementById('collapse').toggle();
+  }
+
+  private record(){
+    console.log("record");
   }
 }
