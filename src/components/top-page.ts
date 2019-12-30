@@ -11,19 +11,18 @@ import { navigate } from '../actions/app.js';
 
 // We are lazy loading its reducer.
 import user from '../reducers/user.js';
+import routines from '../reducers/routines.js';
 store.addReducers({
-  user
+  user, routines
 });
 
 // These are the shared styles needed by this element.
 import { SharedStyles } from './shared-styles.js';
 
-// Firebase
-import firebase from "../utils/firebase.js";
-
 // compornents
 import '../utils/loading-image.js';
 import '@polymer/paper-dialog/paper-dialog.js';
+import './routine-register.js';
 
 @customElement('top-page')
 export class TopPage extends connect(store)(PageViewElement) {
@@ -47,11 +46,6 @@ export class TopPage extends connect(store)(PageViewElement) {
           overflow: auto;
           margin: 0;
         }
-
-        input, select {
-          display: block;
-          border: 1px solid black;
-        }
       `
     ];
   }
@@ -59,26 +53,11 @@ export class TopPage extends connect(store)(PageViewElement) {
   protected render() {
     return html`
       <section>
-        <button @click="${this.openRoutineRegister}">追加</buttion>
+        <button @click="${this.openRoutineRegister}">追加</button>
       </section>
 
       <paper-dialog id="modal" class="modal" modal>
-        <label>名前</label>
-        <input id="name" type="text"></input>
-        <label>ペース</label>
-        <select id="span">
-          <option value="day">日</option>
-          <option value="week">週</option>
-          <option value="month">月</option>
-          <option value="year">年</option>
-        </select>
-        <span>に</span>
-        <input id="frequency" type="number"></input>
-        <span>回</span>
-        <div class="buttons">
-          <button @click="${this.registRoutine}">登録する</button>
-          <button dialog-confirm autofocus>キャンセル</button>
-        </div>
+        <routine-register></routine-register>
       </paper-dialog>
 
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
@@ -90,33 +69,20 @@ export class TopPage extends connect(store)(PageViewElement) {
   }
 
   private openRoutineRegister() {
-    console.log('openRoutineRegister', this.shadowRoot.getElementById("modal"));
     this.shadowRoot.getElementById("modal").open();
-  }
-
-  private registRoutine(){
-    const name = this.shadowRoot.getElementById("name").value;
-    const span = this.shadowRoot.getElementById("span").value;
-    const frequency = this.shadowRoot.getElementById("frequency").value;
-    const routine = { name, span, frequency };
-    console.log(name, span, frequency, this.user);
-    firebase
-      .firestore()
-      .collection("users")
-      .doc(this.user.uid)
-      .collection("routines")
-      .add(routine);
-    // firebase.firestore().collection("users").doc(this.user.uid).set(routine);
   }
 
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
-    console.log('State Changed', state, state.user);
+    console.log('State Changed', state, state.user, state.routines);
     if((state.app.page !== "login") && (!state.user || !state.user.uid)){
       store.dispatch(navigate("/login"));
     }
     this.setAttribute('loadingDisplay', 'none');
-    // this.setAttribute('user', {});
     this.user = state.user;
+
+    if(this.shadowRoot.getElementById("modal")){
+      this.shadowRoot.getElementById("modal").close();
+    }
   }
 }
