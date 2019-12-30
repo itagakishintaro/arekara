@@ -28,10 +28,10 @@ import '@polymer/paper-dialog/paper-dialog.js';
 @customElement('top-page')
 export class TopPage extends connect(store)(PageViewElement) {
   @property({ type: String })
-  loadingDisplay = 'block';
+  private loadingDisplay = 'block';
 
   @property({ type: Object })
-  user = {};
+  private user = {};
 
   static get styles() {
     return [
@@ -59,24 +59,24 @@ export class TopPage extends connect(store)(PageViewElement) {
   protected render() {
     return html`
       <section>
-        <button @click="${this._openRoutineRegister}">追加</buttion>
+        <button @click="${this.openRoutineRegister}">追加</buttion>
       </section>
 
       <paper-dialog id="modal" class="modal" modal>
-        <label>タイトル</label>
-        <input type="text"></input>
+        <label>名前</label>
+        <input id="name" type="text"></input>
         <label>ペース</label>
-        <select>
+        <select id="span">
           <option value="day">日</option>
           <option value="week">週</option>
           <option value="month">月</option>
           <option value="year">年</option>
         </select>
         <span>に</span>
-        <input type="number"></input>
+        <input id="frequency" type="number"></input>
         <span>回</span>
         <div class="buttons">
-          <button>登録する</button>
+          <button @click="${this.registRoutine}">登録する</button>
           <button dialog-confirm autofocus>キャンセル</button>
         </div>
       </paper-dialog>
@@ -89,19 +89,34 @@ export class TopPage extends connect(store)(PageViewElement) {
     super();
   }
 
-  private _openRoutineRegister(e) {
-    console.log('_openRoutineRegister', this.shadowRoot.getElementById("modal"));
+  private openRoutineRegister() {
+    console.log('openRoutineRegister', this.shadowRoot.getElementById("modal"));
     this.shadowRoot.getElementById("modal").open();
-    // e.target.open()
+  }
+
+  private registRoutine(){
+    const name = this.shadowRoot.getElementById("name").value;
+    const span = this.shadowRoot.getElementById("span").value;
+    const frequency = this.shadowRoot.getElementById("frequency").value;
+    const routine = { name, span, frequency };
+    console.log(name, span, frequency, this.user);
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(this.user.uid)
+      .collection("routines")
+      .add(routine);
+    // firebase.firestore().collection("users").doc(this.user.uid).set(routine);
   }
 
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
-    console.log('State Changed', state);
-    this.setAttribute('loadingDisplay', 'none');
+    console.log('State Changed', state, state.user);
     if((state.app.page !== "login") && (!state.user || !state.user.uid)){
       store.dispatch(navigate("/login"));
     }
-
+    this.setAttribute('loadingDisplay', 'none');
+    // this.setAttribute('user', {});
+    this.user = state.user;
   }
 }
