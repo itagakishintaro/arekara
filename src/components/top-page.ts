@@ -23,6 +23,7 @@ import { SharedStyles } from './shared-styles.js';
 import '../utils/loading-image.js';
 import '@polymer/paper-dialog/paper-dialog.js';
 import './routine-register.js';
+import './routine-list.js';
 
 @customElement('top-page')
 export class TopPage extends connect(store)(PageViewElement) {
@@ -53,6 +54,7 @@ export class TopPage extends connect(store)(PageViewElement) {
   protected render() {
     return html`
       <section>
+        <routine-list></routine-list>
         <button @click="${this.openRoutineRegister}">追加</button>
       </section>
 
