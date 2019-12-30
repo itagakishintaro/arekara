@@ -72,8 +72,9 @@ export class RoutineRegister extends connect(store)(LitElement) {
     const name = this.shadowRoot.getElementById("name").value;
     const span = this.shadowRoot.getElementById("span").value;
     const frequency = this.shadowRoot.getElementById("frequency").value;
-    const routine = { name, span, frequency };
-    console.log(this.user.uid);
+    const datetime = moment().format();
+    const routine = { name, span, frequency, datetime };
+    console.log('routine',routine);
     firebase
       .firestore()
       .collection("users")

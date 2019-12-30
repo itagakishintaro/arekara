@@ -44,9 +44,14 @@ export class RoutineList extends connect(store)(LitElement) {
 
   protected render() {
     return html`
-      <ul>
-        ${this.routines.map(r => html`<li>${r.name}</li>`)}
-      </ul>
+      <div>
+        ${this.routines.map(r => html`
+          <div>${ r.name }</div>
+          <div>${ this.spanShortName(r.span) } ${ r.frequency }ペース</div>
+          <div>${ this.fromLastDay(r.records) }</div>
+          <div>${ this.calcPace(r) }</div>
+        `)}
+      </div>
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
     `
   }
@@ -74,5 +79,55 @@ export class RoutineList extends connect(store)(LitElement) {
         }
         this.routines = snapshot.docs.map(doc => doc.data());
     });
+  }
+
+  private spanShortName(span){
+    switch(span){
+      case 'day':
+        return '日';
+        break;
+      case 'week':
+        return '週';
+        break;
+      case 'month':
+        return '月';
+        break;
+      case 'year':
+        return '年';
+        break;
+      default:
+        return '';
+        break
+    }
+  }
+
+  private fromLastDay(records){
+    const lastDay = Object.keys(records).reduce( (pre, cur) => pre < cur? cur: pre, '' );
+    return moment().diff(moment(lastDay), 'days');
+  }
+
+  private calcPace(r){
+    const firstDay = Object.keys(r.records).reduce( (pre, cur) => pre > cur? cur: pre, moment().format() );
+    const fromFirstDay = moment().diff(moment(firstDay), 'days');
+    const times = Object.keys(r.records).length;
+    let span;
+    switch(r.span){
+      case 'day':
+        span = 1;
+        break;
+      case 'week':
+        span = 7;
+        break;
+      case 'month':
+        span = 30;
+        break;
+      case 'year':
+        span = 365;
+        break;
+      default:
+        span = 1;
+        break
+    }
+    return times / (fromFirstDay + 1) * span;
   }
 }
