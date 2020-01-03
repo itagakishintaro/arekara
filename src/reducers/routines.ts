@@ -11,6 +11,7 @@ const INITIAL_STATE: RoutineState = [];
 const routines: Reducer<RoutineState, RootAction> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case REGIST:
+      return state;
     case SET_TARGET:
       return action.id;
     default:
