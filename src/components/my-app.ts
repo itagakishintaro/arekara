@@ -65,10 +65,14 @@ export class MyApp extends connect(store)(LitElement) {
 
           --app-primary-color: #e91e63;
           --app-secondary-color: #293237;
+          --app-form-color: #303f9f;
           --app-dark-text-color: var(--app-secondary-color);
           --app-light-text-color: white;
           --app-section-even-color: #f7f7f7;
           --app-section-odd-color: white;
+          --app-small-text-size: 14px;
+          --app-medium-text-size: 16px;
+          --app-large-text-size: 20px;
 
           --app-header-background-color: white;
           --app-header-text-color: var(--app-dark-text-color);
