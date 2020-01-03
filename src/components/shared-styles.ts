@@ -37,6 +37,16 @@ export const SharedStyles = css`
     color: var(--app-dark-text-color);
   }
 
+  button{
+    display: block;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+    appearance: none;
+  }
+
   @media (min-width: 460px) {
     h2 {
       font-size: 36px;

@@ -1,4 +1,4 @@
-import { html, customElement, property } from 'lit-element';
+import { html, css, customElement, property } from 'lit-element';
 import { PageViewElement } from './page-view-element.js';
 
 import { connect } from 'pwa-helpers/connect-mixin.js';
@@ -37,14 +37,43 @@ export class LoginPage extends connect(store)(PageViewElement) {
 
   static get styles() {
     return [
-      SharedStyles
+      SharedStyles,
+      css`
+      .login-button {
+        background-color: var(--app-primary-color);
+        color: var(--app-light-text-color);
+        padding: 10px 32px 10px 8px;
+        margin: 0 auto;
+        font-size: 16px;
+        vertical-align: middle;
+      }
+
+      .login-button::before {
+        content: "";
+        display: inline-block;
+        height: 46px;
+        width: 46px;
+        margin: 0 24px 0 0;
+        background:url(/images/g_normal.svg) no-repeat;
+        background-size:contain;
+        vertical-align: middle;
+      }
+
+      .login-button:focus::before {
+        background:url(/images/g_focus.svg) no-repeat;
+      }
+
+      .login-button:active::before {
+        background:url(/images/g_pressed.svg) no-repeat;
+      }
+      `
     ];
   }
 
   protected render() {
     return html`
       <section>
-        <button @click="${this._googleLogin}">Google でログイン</buttion>
+        <button class="login-button" @click="${this._googleLogin}">Sign up with Google</buttion>
       </section>
 
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
