@@ -33,6 +33,9 @@ export class HistoryPage extends connect(store)(PageViewElement) {
   @property({ type: Object })
   private user = {};
 
+  @property({ type: Array })
+  private records = [];
+
   static get styles() {
     return [
       SharedStyles,
@@ -44,7 +47,11 @@ export class HistoryPage extends connect(store)(PageViewElement) {
   protected render() {
     return html`
       <section>
-        <div>history</div>
+        <ul>
+          ${this.records.map(datetime => html`
+            <li>${datetime}</li>
+          `)}
+        </ul>
       </section>
 
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
@@ -57,6 +64,9 @@ export class HistoryPage extends connect(store)(PageViewElement) {
 
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
-    console.log(state);
+    console.log("-----", Object.keys(state.setting.targetRoutine.records)[0]);
+    this.record = Object.keys(state.setting.targetRoutine.records);
+    console.log("=====", this.record);
+    // this.setAttribute('records', Object.keys(state.setting.targetRoutine.records));
   }
 }

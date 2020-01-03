@@ -32,12 +32,16 @@ import { ShopState } from './reducers/shop.js';
 import { AppAction } from './actions/app.js';
 import { CounterAction } from './actions/counter.js';
 import { ShopAction } from './actions/shop.js';
+import { RoutineState } from './reducers/routines.js';
+import { SettingState } from './reducers/setting.js';
 
 // Overall state extends static states and partials lazy states.
 export interface RootState {
   app?: AppState;
   counter?: CounterState;
   shop?: ShopState;
+  routines?: RoutineState;
+  setting?: SettingState;
 }
 
 export type RootAction = AppAction | CounterAction | ShopAction;
