@@ -7,13 +7,11 @@ import { store } from '../store.js';
 
 // These are the actions needed by this element.
 import { navigate } from '../actions/app.js';
-import { setTargetRoutine } from '../actions/setting.js';
 
 // We are lazy loading its reducer.
 import user from '../reducers/user.js';
-import setting from '../reducers/setting.js';
 store.addReducers({
-  user, setting
+  user
 });
 
 // These are the shared styles needed by this element.
@@ -43,6 +41,16 @@ export class RoutineItem extends connect(store)(LitElement) {
     return [
       SharedStyles,
       css`
+        .modal {
+          position: fixed;
+          top: 5vh;
+          left: 5vw;
+          width: 90vw;
+          max-width: 90vw;
+          height: 90vh;
+          overflow: auto;
+          margin: 0;
+        }
       `
     ];
   }
@@ -60,17 +68,22 @@ export class RoutineItem extends connect(store)(LitElement) {
           <iron-collapse id="collapse" opend="false">
             <button @click="${this.record}">Record</button>
             <button @click="${this.openCalendar}">Calendar</button>
-            <button @click="${this.moveToSetting}">Setting</button>
+            <button @click="${this.openSetting}">Setting</button>
             <button @click="${this.moveToHistory}">History</button>
           </iron-collapse>
         </div>
       </paper-card>
 
-      <paper-dialog id="modal" class="modal" modal>
+      <paper-dialog id="modalCalendar" class="modal" modal>
         <input id="datetime" type="datetime-local" value="${moment().format("YYYY-MM-DD" + "T00:00")}"></input>
         <button @click="${this.recordWithDatetime}">完了</button>
         <button @click="${this.closeCalendar}">キャンセル</button>
       </paper-dialog>
+
+      <paper-dialog id="modalSetting" class="modal" modal>
+        <routine-register .routine="${this.routine}"></routine-register>
+      </paper-dialog>
+
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
     `
   }
@@ -84,6 +97,10 @@ export class RoutineItem extends connect(store)(LitElement) {
   stateChanged(state: RootState) {
     this.user = state.user;
     console.log(state);
+
+    if(this.shadowRoot.getElementById("modalSetting")){
+      this.shadowRoot.getElementById("modalSetting").close();
+    }
   }
 
   private spanShortName(span){
@@ -154,7 +171,7 @@ export class RoutineItem extends connect(store)(LitElement) {
   private recordWithDatetime(){
     const datetime = moment(this.shadowRoot.getElementById("datetime").value).format();
     this.recordToFirebase(datetime);
-    this.shadowRoot.getElementById("modal").close();
+    this.closeCalendar();
   }
 
   private recordToFirebase(datetime){
@@ -167,16 +184,19 @@ export class RoutineItem extends connect(store)(LitElement) {
   }
 
   private openCalendar(){
-    this.shadowRoot.getElementById("modal").open();
+    this.shadowRoot.getElementById("modalCalendar").open();
   }
 
   private closeCalendar(){
-    this.shadowRoot.getElementById("modal").close();
+    this.shadowRoot.getElementById("modalCalendar").close();
   }
 
-  private moveToSetting(){
-    store.dispatch(setTargetRoutine(this.routine));
-    store.dispatch(navigate("/setting"));
+  private openSetting(){
+    this.shadowRoot.getElementById("modalSetting").open();
+  }
+
+  private closeSetting(){
+    this.shadowRoot.getElementById("modalSetting").close();
   }
 
   private moveToHistory(){

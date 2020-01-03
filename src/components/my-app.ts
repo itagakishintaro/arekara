@@ -219,7 +219,6 @@ export class MyApp extends connect(store)(LitElement) {
       <main role="main" class="main-content">
         <login-page class="page" ?active="${this._page === 'login'}"></login-page>
         <top-page class="page" ?active="${this._page === 'top'}"></top-page>
-        <setting-page class="page" ?active="${this._page === 'setting'}"></setting-page>
         <history-page class="page" ?active="${this._page === 'history'}"></history-page>
         <my-view404 class="page" ?active="${this._page === 'view404'}"></my-view404>
       </main>

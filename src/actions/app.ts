@@ -49,9 +49,6 @@ const loadPage: ActionCreator<ThunkResult> = (page: string) => (dispatch) => {
     case 'top':
       import('../components/top-page.js');
       break;
-    case 'setting':
-      import('../components/setting-page.js');
-      break;
     case 'history':
       import('../components/history-page.js');
       break;

@@ -33,6 +33,9 @@ export class RoutineRegister extends connect(store)(LitElement) {
   @property({ type: Object })
   private user = {};
 
+  @property({ type: Object, reflect: true })
+  private routine = {};  
+
   static get styles() {
     return [
       SharedStyles,
@@ -112,25 +115,35 @@ export class RoutineRegister extends connect(store)(LitElement) {
     return html`
       <section>
         <form>
-          <paper-input label="Name" id="name" type="text"></paper-input>
+          <paper-input label="Name" id="name" type="text" value="${this.routine.name?this.routine.name:""}"></paper-input>
 
           <div class="select-area">
             <label class="title" for="span">Period</label>
             <div class="inner">
               <select id="span">
                 <option value="">--Please choose an option--</option>
-                <option value="day">日</option>
-                <option value="week">週</option>
-                <option value="month">月</option>
-                <option value="year">年</option>
+                ${this.routine.span === 'day'?
+                  html`<option value="day" selected>日</option>`:
+                  html`<option value="day">日</option>`}
+                ${this.routine.span === 'week'?
+                  html`<option value="week" selected>週</option>`:
+                  html`<option value="week">週</option>`}
+                ${this.routine.span === 'month'?
+                  html`<option value="month" selected>月</option>`:
+                  html`<option value="month">月</option>`}
+                ${this.routine.span === 'year'?
+                  html`<option value="year" selected>年</option>`:
+                  html`<option value="year">年</option>`}
               </select>
             </div>
           </div>
 
-          <paper-input label="Times" id="frequency" type="number"></paper-input>
+          <paper-input label="Times" id="frequency" type="number" value="${this.routine.frequency?this.routine.frequency:""}"></paper-input>
 
           <div class="button-area">
-            <paper-button raised class="custom indigo" @click="${this.registRoutine}">登録する</paper-button>
+            ${this.routine.id?
+              html`<paper-button raised class="custom indigo" @click="${this.updateRoutine}">更新する</paper-button>`:
+              html`<paper-button raised class="custom indigo" @click="${this.registRoutine}">登録する</paper-button>`}
             <paper-button raised dialog-confirm autofocus>キャンセル</paper-button>
           </div>
         </form>
@@ -146,7 +159,6 @@ export class RoutineRegister extends connect(store)(LitElement) {
     const frequency = this.shadowRoot.getElementById("frequency").value;
     const datetime = moment().format();
     const routine = { name, span, frequency, datetime };
-    console.log('routine',routine);
     firebase
       .firestore()
       .collection("users")
@@ -154,12 +166,26 @@ export class RoutineRegister extends connect(store)(LitElement) {
       .collection("routines")
       .add(routine);
     store.dispatch(regist());
-    // this.shadowRoot.parentNode.close();
   }
 
-    // This is called every time something is updated in the store.
-    stateChanged(state: RootState) {
-      this.user = state.user;
-      console.log(state);
-    }
+  private updateRoutine(){
+    const newRoutine = this.routine;
+    newRoutine.name = this.shadowRoot.getElementById("name").value;
+    newRoutine.span = this.shadowRoot.getElementById("span").value;
+    newRoutine.frequency = this.shadowRoot.getElementById("frequency").value;
+    newRoutine.datetime = moment().format();
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(this.user.uid)
+      .collection("routines")
+      .doc(this.routine.id)
+      .set(newRoutine);
+    store.dispatch(regist());
+  }
+
+  // This is called every time something is updated in the store.
+  stateChanged(state: RootState) {
+    this.user = state.user;
+  }
 }
