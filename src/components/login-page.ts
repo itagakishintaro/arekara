@@ -61,6 +61,11 @@ export class LoginPage extends connect(store)(PageViewElement) {
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
     console.log('State Changed', state);
-    this.setAttribute('loadingDisplay', 'none');
+    // todo: userが変化する前にappが変化してしまう
+    if(state.user.uid) {
+      this.setAttribute('loadingDisplay', 'block');
+    } else {
+      this.setAttribute('loadingDisplay', 'none');
+    }
   }
 }

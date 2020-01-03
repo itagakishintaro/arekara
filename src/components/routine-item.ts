@@ -20,6 +20,7 @@ import firebase from "../utils/firebase.js";
 // compornents
 import '../utils/loading-image.js';
 import '@polymer/iron-collapse/iron-collapse.js';
+import '@polymer/paper-card/paper-card.js';
 
 @customElement('routine-item')
 export class RoutineItem extends connect(store)(LitElement) {
@@ -42,7 +43,8 @@ export class RoutineItem extends connect(store)(LitElement) {
 
   protected render() {
     return html`
-      <div>
+      <paper-card>
+        <div class="card-content">
           <div @click="${ this.toggleCollapse }">${ this.routine.name }</div>
           <div>${ this.spanShortName(this.routine.span) } ${ this.routine.frequency }ペース</div>
           <iron-collapse id="collapse" opend="false">
@@ -50,7 +52,8 @@ export class RoutineItem extends connect(store)(LitElement) {
           </iron-collapse>
           <div>${ this.fromLastDay(this.routine.records) }</div>
           <div>${ this.calcPace(this.routine) }</div>
-      </div>
+        </div>
+      </paper-card>
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
     `
   }
