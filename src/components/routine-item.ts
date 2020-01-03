@@ -21,6 +21,7 @@ import firebase from "../utils/firebase.js";
 import '../utils/loading-image.js';
 import '@polymer/iron-collapse/iron-collapse.js';
 import '@polymer/paper-card/paper-card.js';
+import '@polymer/paper-dialog/paper-dialog.js';
 
 @customElement('routine-item')
 export class RoutineItem extends connect(store)(LitElement) {
@@ -49,11 +50,19 @@ export class RoutineItem extends connect(store)(LitElement) {
           <div>${ this.spanShortName(this.routine.span) } ${ this.routine.frequency }ペース</div>
           <iron-collapse id="collapse" opend="false">
             <button @click="${this.record}">Record</button>
+            <button @click="${this.openCalendar}">Calendar</button>
+            <button @click="${this.moveToSetting}">Setting</button>
           </iron-collapse>
           <div>${ this.fromLastDay(this.routine.records) }</div>
           <div>${ this.calcPace(this.routine) }</div>
         </div>
       </paper-card>
+
+      <paper-dialog id="modal" class="modal" modal>
+        <input id="datetime" type="datetime-local" value="${moment().format("YYYY-MM-DD" + "T00:00")}"></input>
+        <button @click="${this.recordWithDatetime}">完了</button>
+        <button @click="${this.closeCalendar}">キャンセル</button>
+      </paper-dialog>
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
     `
   }
@@ -131,11 +140,33 @@ export class RoutineItem extends connect(store)(LitElement) {
 
   private record(){
     const datetime = moment().format();
+    this.recordToFirebase(datetime);
+  }
+
+  private recordWithDatetime(){
+    const datetime = moment(this.shadowRoot.getElementById("datetime").value).format();
+    this.recordToFirebase(datetime);
+    this.shadowRoot.getElementById("modal").close();
+  }
+
+  private recordToFirebase(datetime){
     firebase.firestore()
       .collection('users')
       .doc(this.user.uid)
       .collection('routines')
       .doc(this.routine.id)
       .set( {records: {[datetime]: true} }, { merge: true } );
+  }
+
+  private openCalendar(){
+    this.shadowRoot.getElementById("modal").open();
+  }
+
+  private closeCalendar(){
+    this.shadowRoot.getElementById("modal").close();
+  }
+
+  private moveToSetting(){
+    console.log("moveToSetting");
   }
 }
