@@ -90,11 +90,12 @@ export class LoginPage extends connect(store)(PageViewElement) {
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
     console.log('State Changed', state);
-    // todo: userが変化する前にappが変化してしまう
-    if(state.user.uid) {
-      this.setAttribute('loadingDisplay', 'block');
-    } else {
+    // firebaseでuser情報がnullのときはuser.uid = nullをセットしている
+    // user.uidがないときはfirebaseが認証情報をとれていないとき（つまり、ローディングさせる）
+    if(Object.keys(state.user).length) {
       this.setAttribute('loadingDisplay', 'none');
+    } else {
+      this.setAttribute('loadingDisplay', 'block');
     }
   }
 }

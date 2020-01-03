@@ -37,6 +37,8 @@ firebaseDefault.auth().onAuthStateChanged(async user => {
   if (user && user.uid) {
     store.dispatch(update(user));
     store.dispatch(navigate("/top"));
+  } else {
+    store.dispatch(update({uid: null}));
   }
 }
 
