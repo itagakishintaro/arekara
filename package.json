@@ -20,8 +20,13 @@
   "dependencies": {
     "@polymer/app-layout": "^3.0.0",
     "@polymer/iron-collapse": "^3.0.1",
+    "@polymer/paper-button": "^3.0.1",
     "@polymer/paper-card": "^3.0.1",
     "@polymer/paper-dialog": "^3.0.1",
+    "@polymer/paper-dropdown-menu": "^3.1.0",
+    "@polymer/paper-input": "^3.1.0",
+    "@polymer/paper-item": "^3.0.1",
+    "@polymer/paper-listbox": "^3.0.1",
     "@polymer/polymer": "^3.1.0",
     "@webcomponents/webcomponentsjs": "^2.2.4",
     "firebase": "^7.6.1",
