@@ -5,10 +5,15 @@ import { connect } from 'pwa-helpers/connect-mixin.js';
 // This element is connected to the Redux store.
 import { store } from '../store.js';
 
+// These are the actions needed by this element.
+import { navigate } from '../actions/app.js';
+import { setTargetRoutine } from '../actions/setting.js';
+
 // We are lazy loading its reducer.
 import user from '../reducers/user.js';
+import setting from '../reducers/setting.js';
 store.addReducers({
-  user
+  user, setting
 });
 
 // These are the shared styles needed by this element.
@@ -167,6 +172,7 @@ export class RoutineItem extends connect(store)(LitElement) {
   }
 
   private moveToSetting(){
-    console.log("moveToSetting");
+    store.dispatch(setTargetRoutine(this.routine));
+    store.dispatch(navigate("/setting"));
   }
 }

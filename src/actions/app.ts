@@ -49,8 +49,8 @@ const loadPage: ActionCreator<ThunkResult> = (page: string) => (dispatch) => {
     case 'top':
       import('../components/top-page.js');
       break;
-    case 'view3':
-      import('../components/my-view3.js');
+    case 'setting':
+      import('../components/setting-page.js');
       break;
     default:
       page = 'view404';

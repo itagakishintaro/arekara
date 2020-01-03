@@ -215,7 +215,7 @@ export class MyApp extends connect(store)(LitElement) {
         <nav class="toolbar-list">
           <a ?selected="${this._page === 'login'}" href="/login">ログイン</a>
           <a ?selected="${this._page === 'top'}" href="/top">トップ</a>
-          <a ?selected="${this._page === 'view3'}" href="/view3">View Three</a>
+          <a ?selected="${this._page === 'setting'}" href="/setting">設定</a>
         </nav>
       </app-header>
 
@@ -226,7 +226,7 @@ export class MyApp extends connect(store)(LitElement) {
         <nav class="drawer-list">
           <a ?selected="${this._page === 'login'}" href="/ ">ログイン</a>
           <a ?selected="${this._page === 'top'}" href="/top">トップ</a>
-          <a ?selected="${this._page === 'view3'}" href="/view3">View Three</a>
+          <a ?selected="${this._page === 'setting'}" href="/setting">設定</a>
         </nav>
       </app-drawer>
 
@@ -234,7 +234,7 @@ export class MyApp extends connect(store)(LitElement) {
       <main role="main" class="main-content">
         <login-page class="page" ?active="${this._page === 'login'}"></login-page>
         <top-page class="page" ?active="${this._page === 'top'}"></top-page>
-        <my-view3 class="page" ?active="${this._page === 'view3'}"></my-view3>
+        <setting-page class="page" ?active="${this._page === 'setting'}"></setting-page>
         <my-view404 class="page" ?active="${this._page === 'view404'}"></my-view404>
       </main>
 
