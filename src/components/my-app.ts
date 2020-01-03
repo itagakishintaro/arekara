@@ -207,39 +207,21 @@ export class MyApp extends connect(store)(LitElement) {
       <!-- Header -->
       <app-header condenses reveals effects="waterfall">
         <app-toolbar class="toolbar-top">
-          <button class="menu-btn" title="Menu" @click="${this._menuButtonClicked}">${menuIcon}</button>
           <div main-title>${this.appTitle}</div>
         </app-toolbar>
-
-        <!-- This gets hidden on a small screen-->
-        <nav class="toolbar-list">
-          <a ?selected="${this._page === 'login'}" href="/login">ログイン</a>
-          <a ?selected="${this._page === 'top'}" href="/top">トップ</a>
-          <a ?selected="${this._page === 'setting'}" href="/setting">設定</a>
-        </nav>
       </app-header>
-
-      <!-- Drawer content -->
-      <app-drawer
-          .opened="${this._drawerOpened}"
-          @opened-changed="${this._drawerOpenedChanged}">
-        <nav class="drawer-list">
-          <a ?selected="${this._page === 'login'}" href="/ ">ログイン</a>
-          <a ?selected="${this._page === 'top'}" href="/top">トップ</a>
-          <a ?selected="${this._page === 'setting'}" href="/setting">設定</a>
-        </nav>
-      </app-drawer>
 
       <!-- Main content -->
       <main role="main" class="main-content">
         <login-page class="page" ?active="${this._page === 'login'}"></login-page>
         <top-page class="page" ?active="${this._page === 'top'}"></top-page>
         <setting-page class="page" ?active="${this._page === 'setting'}"></setting-page>
+        <history-page class="page" ?active="${this._page === 'history'}"></history-page>
         <my-view404 class="page" ?active="${this._page === 'view404'}"></my-view404>
       </main>
 
       <footer>
-        <p>Made with &hearts; by the Polymer team.</p>
+        <p></p>
       </footer>
 
       <snack-bar ?active="${this._snackbarOpened}">
@@ -271,14 +253,6 @@ export class MyApp extends connect(store)(LitElement) {
         // This object also takes an image property, that points to an img src.
       });
     }
-  }
-
-  private _menuButtonClicked() {
-    store.dispatch(updateDrawerState(true));
-  }
-
-  private _drawerOpenedChanged(e: Event) {
-    store.dispatch(updateDrawerState((e.target as AppDrawerElement).opened));
   }
 
   stateChanged(state: RootState) {

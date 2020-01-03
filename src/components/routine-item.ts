@@ -53,13 +53,16 @@ export class RoutineItem extends connect(store)(LitElement) {
         <div class="card-content">
           <div @click="${ this.toggleCollapse }">${ this.routine.name }</div>
           <div>${ this.spanShortName(this.routine.span) } ${ this.routine.frequency }ペース</div>
+
+          <div>${ this.fromLastDay(this.routine.records) }</div>
+          <div>${ this.calcPace(this.routine) }</div>
+
           <iron-collapse id="collapse" opend="false">
             <button @click="${this.record}">Record</button>
             <button @click="${this.openCalendar}">Calendar</button>
             <button @click="${this.moveToSetting}">Setting</button>
+            <button @click="${this.moveToHistory}">History</button>
           </iron-collapse>
-          <div>${ this.fromLastDay(this.routine.records) }</div>
-          <div>${ this.calcPace(this.routine) }</div>
         </div>
       </paper-card>
 
@@ -174,5 +177,10 @@ export class RoutineItem extends connect(store)(LitElement) {
   private moveToSetting(){
     store.dispatch(setTargetRoutine(this.routine));
     store.dispatch(navigate("/setting"));
+  }
+
+  private moveToHistory(){
+    store.dispatch(setTargetRoutine(this.routine));
+    store.dispatch(navigate("/history"));
   }
 }

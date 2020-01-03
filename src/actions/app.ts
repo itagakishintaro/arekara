@@ -52,6 +52,9 @@ const loadPage: ActionCreator<ThunkResult> = (page: string) => (dispatch) => {
     case 'setting':
       import('../components/setting-page.js');
       break;
+    case 'history':
+      import('../components/history-page.js');
+      break;
     default:
       page = 'view404';
       import('../components/my-view404.js');
