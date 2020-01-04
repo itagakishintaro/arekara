@@ -1,5 +1,5 @@
 import { Reducer } from 'redux';
-import { REGIST, SET_TARGET } from '../actions/routines.js';
+import { REGIST } from '../actions/routines.js';
 import { RootAction } from '../store.js';
 
 export interface RoutineState {
@@ -12,8 +12,6 @@ const routines: Reducer<RoutineState, RootAction> = (state = INITIAL_STATE, acti
   switch (action.type) {
     case REGIST:
       return state;
-    case SET_TARGET:
-      return action.id;
     default:
       return state;
   }
