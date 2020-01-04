@@ -25,6 +25,8 @@ import '../utils/loading-image.js';
 import '@polymer/iron-collapse/iron-collapse.js';
 import '@polymer/paper-card/paper-card.js';
 import '@polymer/paper-dialog/paper-dialog.js';
+import '@polymer/iron-icons/iron-icons.js';
+import '@polymer/paper-icon-button/paper-icon-button.js';
 
 @customElement('routine-item')
 export class RoutineItem extends connect(store)(LitElement) {
@@ -51,7 +53,61 @@ export class RoutineItem extends connect(store)(LitElement) {
           overflow: auto;
           margin: 0;
         }
-      `
+
+        paper-card {
+          display: block;
+          margin : 0 0 20px;
+          border-top: 6px solid var(--app-primary-color);
+        }
+
+        paper-card .title {
+          font-size: var(--app-large-text-size);
+          font-weight: normal;
+        }
+
+        paper-card .lead {
+          font-size: var(--app-small-text-size);
+          color: var(--app-drawer-selected-color);
+          margin: 0;
+        }
+
+        paper-card .item-wrapper {
+          display: flex;
+          justify-content: center;
+          margin: 20px 0 0;
+        }
+
+        paper-card .item-wrapper .item {
+          width: 20%;
+          min-width: 80px;
+          padding: 15px 10px;
+          margin: 0 5px;
+          border-radius: 2px;
+          background-color: var(--app-primary-color);
+          color: var(--app-light-text-color);
+          text-align: center;
+        }
+
+        paper-card .item-wrapper .category {
+          margin: 0;
+          font-size: var(--app-small-text-size);
+        }
+
+        paper-card .item-wrapper .number {
+          margin: 0;
+          font-size: 30px;
+        }
+        paper-card .button-wrapper {
+          display: flex;
+          justify-content: space-around;
+          margin: 40px 0 0;
+        }
+        paper-icon-button {
+          display: block;
+          width: 80px;
+          height: 80px;
+        }
+        `
     ];
   }
 
@@ -59,17 +115,19 @@ export class RoutineItem extends connect(store)(LitElement) {
     return html`
       <paper-card>
         <div class="card-content">
-          <div @click="${ this.toggleCollapse }">${ this.routine.name }</div>
-          <div>${ this.spanShortName(this.routine.span) } ${ this.routine.frequency }ペース</div>
+          <b class="title" @click="${ this.toggleCollapse }">${ this.routine.name }</b>
+          <p class="lead">${ this.spanShortName(this.routine.span) } ${ this.routine.frequency }ペース</p>
 
-          <div>${ this.fromLastDay(this.routine.records) }</div>
-          <div>${ this.calcPace(this.routine) }</div>
+          <div class="item-wrapper">
+            <div class="item"><p class="category">あれから</p><p class="number">${ this.fromLastDay(this.routine.records) }</p></div>
+            <div class="item"><p class="category">ペース</p><p class="number">${ this.calcPace(this.routine) }</p></div>
+          </div>
 
-          <iron-collapse id="collapse" opend="false">
-            <button @click="${this.record}">Record</button>
-            <button @click="${this.openCalendar}">Calendar</button>
-            <button @click="${this.openSetting}">Setting</button>
-            <button @click="${this.moveToHistory}">History</button>
+          <iron-collapse class="button-wrapper" id="collapse" opend="false">
+            <paper-icon-button icon="check-circle" title="チェック" @click="${this.record}">Record</paper-icon-button>
+            <paper-icon-button icon="date-range" title="カレンダー登録" @click="${this.openCalendar}">Calendar</paper-icon-button>
+            <paper-icon-button icon="settings" title="設定" @click="${this.openSetting}">Setting</paper-icon-button>
+            <!--<paper-icon-button icon="history" title="履歴" @click="${this.moveToHistory}">History</paper-icon-button>-->
           </iron-collapse>
         </div>
       </paper-card>

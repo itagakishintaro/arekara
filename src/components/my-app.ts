@@ -105,7 +105,7 @@ export class MyApp extends connect(store)(LitElement) {
           /* In the narrow layout, the toolbar is offset by the width of the
           drawer button, and the text looks not centered. Add a padding to
           match that button */
-          padding-right: 44px;
+          /* padding-right: 44px; */
         }
 
         .toolbar-list {
