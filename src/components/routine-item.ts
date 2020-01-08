@@ -214,7 +214,7 @@ export class RoutineItem extends connect(store)(LitElement) {
         period = 1;
         break
     }
-    return times / (fromFirstDay + 1) * period;
+    return Math.round(times / (fromFirstDay + 1) * period * 10) / 10;
   }
 
   private toggleCollapse() {
