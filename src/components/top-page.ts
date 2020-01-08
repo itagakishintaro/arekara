@@ -1,36 +1,37 @@
-import { html, css, customElement, property } from 'lit-element';
-import { PageViewElement } from './page-view-element.js';
+import { html, css, customElement, property } from "lit-element";
+import { PageViewElement } from "./page-view-element.js";
 
-import { connect } from 'pwa-helpers/connect-mixin.js';
+import { connect } from "pwa-helpers/connect-mixin.js";
 
 // This element is connected to the Redux store.
-import { store, RootState } from '../store.js';
+import { store, RootState } from "../store.js";
 
 // These are the actions needed by this element.
-import { navigate } from '../actions/app.js';
+import { navigate } from "../actions/app.js";
 
 // We are lazy loading its reducer.
-import user from '../reducers/user.js';
-import routines from '../reducers/routines.js';
+import user from "../reducers/user.js";
+import routines from "../reducers/routines.js";
 store.addReducers({
-  user, routines
+  user,
+  routines
 });
 
 // These are the shared styles needed by this element.
-import { SharedStyles } from './shared-styles.js';
+import { SharedStyles } from "./shared-styles.js";
 
 // compornents
-import '../utils/loading-image.js';
-import '@polymer/paper-dialog/paper-dialog.js';
-import '@polymer/iron-icons/iron-icons.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import './routine-register.js';
-import './routine-list.js';
+import "../utils/loading-image.js";
+import "@polymer/paper-dialog/paper-dialog.js";
+import "@polymer/iron-icons/iron-icons.js";
+import "@polymer/paper-icon-button/paper-icon-button.js";
+import "./routine-register.js";
+import "./routine-list.js";
 
-@customElement('top-page')
+@customElement("top-page")
 export class TopPage extends connect(store)(PageViewElement) {
   @property({ type: String })
-  private loadingDisplay = 'block';
+  private loadingDisplay = "block";
 
   @property({ type: Object })
   private user = {};
@@ -68,7 +69,12 @@ export class TopPage extends connect(store)(PageViewElement) {
       <section>
         <routine-list></routine-list>
         <div class="control">
-          <paper-icon-button class="add-btn" icon="add-circle-outline" @click="${this.openRoutineRegister}">追加</paper-icon-button>
+          <paper-icon-button
+            class="add-btn"
+            icon="add-circle-outline"
+            @click="${this.openRoutineRegister}"
+            >追加</paper-icon-button
+          >
         </div>
       </section>
 
@@ -77,7 +83,7 @@ export class TopPage extends connect(store)(PageViewElement) {
       </paper-dialog>
 
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
-    `
+    `;
   }
 
   constructor() {
@@ -90,14 +96,14 @@ export class TopPage extends connect(store)(PageViewElement) {
 
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
-    console.log('State Changed', state, state.user, state.routines);
-    if((state.app.page !== "login") && (!state.user || !state.user.uid)){
+    console.log("State Changed", state, state.user, state.routines);
+    if (state.app.page !== "login" && (!state.user || !state.user.uid)) {
       store.dispatch(navigate("/login"));
     }
-    this.setAttribute('loadingDisplay', 'none');
+    this.setAttribute("loadingDisplay", "none");
     this.user = state.user;
 
-    if(this.shadowRoot.getElementById("modal")){
+    if (this.shadowRoot.getElementById("modal")) {
       this.shadowRoot.getElementById("modal").close();
     }
   }

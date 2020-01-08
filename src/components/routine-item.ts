@@ -1,37 +1,37 @@
-import { LitElement, html, css, customElement, property } from 'lit-element';
+import { LitElement, html, css, customElement, property } from "lit-element";
 
-import { connect } from 'pwa-helpers/connect-mixin.js';
+import { connect } from "pwa-helpers/connect-mixin.js";
 
 // This element is connected to the Redux store.
-import { store } from '../store.js';
+import { store } from "../store.js";
 
 // These are the actions needed by this element.
-import { navigate } from '../actions/app.js';
+import { navigate } from "../actions/app.js";
 
 // We are lazy loading its reducer.
-import user from '../reducers/user.js';
+import user from "../reducers/user.js";
 store.addReducers({
   user
 });
 
 // These are the shared styles needed by this element.
-import { SharedStyles } from './shared-styles.js';
+import { SharedStyles } from "./shared-styles.js";
 
 // Firebase
 import firebase from "../utils/firebase.js";
 
 // compornents
-import '../utils/loading-image.js';
-import '@polymer/iron-collapse/iron-collapse.js';
-import '@polymer/paper-card/paper-card.js';
-import '@polymer/paper-dialog/paper-dialog.js';
-import '@polymer/iron-icons/iron-icons.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
+import "../utils/loading-image.js";
+import "@polymer/iron-collapse/iron-collapse.js";
+import "@polymer/paper-card/paper-card.js";
+import "@polymer/paper-dialog/paper-dialog.js";
+import "@polymer/iron-icons/iron-icons.js";
+import "@polymer/paper-icon-button/paper-icon-button.js";
 
-@customElement('routine-item')
+@customElement("routine-item")
 export class RoutineItem extends connect(store)(LitElement) {
   @property({ type: String })
-  private loadingDisplay = 'none';  
+  private loadingDisplay = "none";
 
   @property({ type: Object })
   private user = {};
@@ -59,7 +59,7 @@ export class RoutineItem extends connect(store)(LitElement) {
 
         paper-card {
           display: block;
-          margin : 0 0 20px;
+          margin: 0 0 20px;
           border-top: 6px solid var(--app-primary-color);
         }
 
@@ -113,55 +113,83 @@ export class RoutineItem extends connect(store)(LitElement) {
 
         .card-header {
           margin: 0;
-          padding: .5em 1em;
+          padding: 0.5em 1em;
           border-bottom: 1px solid #eee;
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
         .toggle-icon {
-          box-sizing: content-box; 
+          box-sizing: content-box;
           width: 2em;
           height: 2em;
           color: var(--app-drawer-selected-color);
           margin: 0;
           padding: 0;
         }
-        `
+      `
     ];
   }
 
   protected render() {
     return html`
       <paper-card>
-        <div class="card-header" @click="${ this.toggleCollapse }">
+        <div class="card-header" @click="${this.toggleCollapse}">
           <div>
-            <b class="title">${ this.routine.name }</b>
-            <p class="lead">${ this.routine.periodDisplay } ${ this.routine.times }ペース</p>
+            <b class="title">${this.routine.name}</b>
+            <p class="lead">${this.routine.periodDisplay} ${
+      this.routine.times
+    }ペース</p>
           </div>
           <div>
-            ${this.opened?
-              html`<paper-icon-button class="toggle-icon" icon="expand-less"></paper-icon-button>`:
-              html`<paper-icon-button class="toggle-icon" icon="expand-more"></paper-icon-button>`}
+            ${
+              this.opened
+                ? html`
+                    <paper-icon-button
+                      class="toggle-icon"
+                      icon="expand-less"
+                    ></paper-icon-button>
+                  `
+                : html`
+                    <paper-icon-button
+                      class="toggle-icon"
+                      icon="expand-more"
+                    ></paper-icon-button>
+                  `
+            }
           </div>
         </div>
         <div class="card-content">
           <div class="item-wrapper">
-            <div class="item"><p class="category">あれから</p><p class="number">${ this.fromLastDay(this.routine.records) }</p></div>
-            <div class="item"><p class="category">ペース</p><p class="number">${ this.routine.pace }</p></div>
+            <div class="item"><p class="category">あれから</p><p class="number">${this.fromLastDay(
+              this.routine.records
+            )}</p></div>
+            <div class="item"><p class="category">ペース</p><p class="number">${
+              this.routine.pace
+            }</p></div>
           </div>
 
           <iron-collapse class="button-wrapper" id="collapse" opend="false">
-            <paper-icon-button icon="check-circle" title="チェック" @click="${this.record}">Record</paper-icon-button>
-            <paper-icon-button icon="date-range" title="カレンダー登録" @click="${this.openCalendar}">Calendar</paper-icon-button>
-            <paper-icon-button icon="settings" title="設定" @click="${this.openSetting}">Setting</paper-icon-button>
-            <!--<paper-icon-button icon="history" title="履歴" @click="${this.moveToHistory}">History</paper-icon-button>-->
+            <paper-icon-button icon="check-circle" title="チェック" @click="${
+              this.record
+            }">Record</paper-icon-button>
+            <paper-icon-button icon="date-range" title="カレンダー登録" @click="${
+              this.openCalendar
+            }">Calendar</paper-icon-button>
+            <paper-icon-button icon="settings" title="設定" @click="${
+              this.openSetting
+            }">Setting</paper-icon-button>
+            <!--<paper-icon-button icon="history" title="履歴" @click="${
+              this.moveToHistory
+            }">History</paper-icon-button>-->
           </iron-collapse>
         </div>
       </paper-card>
 
       <paper-dialog id="modalCalendar" class="modal" modal>
-        <input id="datetime" type="datetime-local" value="${moment().format("YYYY-MM-DD" + "T00:00")}"></input>
+        <input id="datetime" type="datetime-local" value="${moment().format(
+          "YYYY-MM-DD" + "T00:00"
+        )}"></input>
         <button @click="${this.recordWithDatetime}">完了</button>
         <button @click="${this.closeCalendar}">キャンセル</button>
       </paper-dialog>
@@ -171,7 +199,7 @@ export class RoutineItem extends connect(store)(LitElement) {
       </paper-dialog>
 
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
-    `
+    `;
   }
 
   constructor() {
@@ -183,61 +211,67 @@ export class RoutineItem extends connect(store)(LitElement) {
     this.user = state.user;
     console.log(state);
 
-    if(this.shadowRoot.getElementById("modalSetting")){
+    if (this.shadowRoot.getElementById("modalSetting")) {
       this.shadowRoot.getElementById("modalSetting").close();
     }
   }
 
-  private fromLastDay(records){
-    if(!records || !Object.keys(records)){
+  private fromLastDay(records) {
+    if (!records || !Object.keys(records)) {
       return;
     }
-    const lastDay = Object.keys(records).reduce( (pre, cur) => pre < cur? cur: pre, '' );
-    return moment().diff(moment(lastDay), 'days');
+    const lastDay = Object.keys(records).reduce(
+      (pre, cur) => (pre < cur ? cur : pre),
+      ""
+    );
+    return moment().diff(moment(lastDay), "days");
   }
 
   private toggleCollapse() {
     this.opened = !this.opened;
-    this.shadowRoot.getElementById('collapse').toggle();
+    this.shadowRoot.getElementById("collapse").toggle();
   }
 
-  private record(){
+  private record() {
     const datetime = moment().format();
     this.recordToFirebase(datetime);
   }
 
-  private recordWithDatetime(){
-    const datetime = moment(this.shadowRoot.getElementById("datetime").value).format();
+  private recordWithDatetime() {
+    const datetime = moment(
+      this.shadowRoot.getElementById("datetime").value
+    ).format();
     this.recordToFirebase(datetime);
     this.closeCalendar();
   }
 
-  private recordToFirebase(datetime){
-    firebase.firestore()
-      .collection('users')
+  private recordToFirebase(datetime) {
+    firebase
+      .firestore()
+      .collection("users")
       .doc(this.user.uid)
-      .collection('routines')
+      .collection("routines")
       .doc(this.routine.id)
-      .set( {records: {[datetime]: true} }, { merge: true } );
+      .set({ records: { [datetime]: true } }, { merge: true });
   }
 
-  private openCalendar(){
+  private openCalendar() {
     this.shadowRoot.getElementById("modalCalendar").open();
   }
 
-  private closeCalendar(){
+  private closeCalendar() {
     this.shadowRoot.getElementById("modalCalendar").close();
   }
 
-  private openSetting(){
+  private openSetting() {
     this.shadowRoot.getElementById("modalSetting").open();
   }
 
-  private closeSetting(){
+  private closeSetting() {
     this.shadowRoot.getElementById("modalSetting").close();
   }
 
-  private moveToHistory(){
+  private moveToHistory() {
     store.dispatch(setTargetRoutine(this.routine));
     store.dispatch(navigate("/history"));
   }

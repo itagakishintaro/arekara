@@ -8,51 +8,54 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 
-import { LitElement, html, css, property, PropertyValues, customElement } from 'lit-element';
-import { setPassiveTouchGestures } from '@polymer/polymer/lib/utils/settings.js';
-import { connect } from 'pwa-helpers/connect-mixin.js';
-import { installMediaQueryWatcher } from 'pwa-helpers/media-query.js';
-import { installOfflineWatcher } from 'pwa-helpers/network.js';
-import { installRouter } from 'pwa-helpers/router.js';
-import { updateMetadata } from 'pwa-helpers/metadata.js';
+import {
+  LitElement,
+  html,
+  css,
+  property,
+  PropertyValues,
+  customElement
+} from "lit-element";
+import { setPassiveTouchGestures } from "@polymer/polymer/lib/utils/settings.js";
+import { connect } from "pwa-helpers/connect-mixin.js";
+import { installMediaQueryWatcher } from "pwa-helpers/media-query.js";
+import { installOfflineWatcher } from "pwa-helpers/network.js";
+import { installRouter } from "pwa-helpers/router.js";
+import { updateMetadata } from "pwa-helpers/metadata.js";
 
 // This element is connected to the Redux store.
-import { store, RootState } from '../store.js';
+import { store, RootState } from "../store.js";
 
 // These are the actions needed by this element.
-import {
-  navigate,
-  updateOffline,
-  updateDrawerState
-} from '../actions/app.js';
+import { navigate, updateOffline, updateDrawerState } from "../actions/app.js";
 
 // The following line imports the type only - it will be removed by tsc so
 // another import for app-drawer.js is required below.
-import { AppDrawerElement } from '@polymer/app-layout/app-drawer/app-drawer.js';
+import { AppDrawerElement } from "@polymer/app-layout/app-drawer/app-drawer.js";
 
 // These are the elements needed by this element.
-import '@polymer/app-layout/app-drawer/app-drawer.js';
-import '@polymer/app-layout/app-header/app-header.js';
-import '@polymer/app-layout/app-scroll-effects/effects/waterfall.js';
-import '@polymer/app-layout/app-toolbar/app-toolbar.js';
-import { menuIcon } from './my-icons.js';
-import './snack-bar.js';
+import "@polymer/app-layout/app-drawer/app-drawer.js";
+import "@polymer/app-layout/app-header/app-header.js";
+import "@polymer/app-layout/app-scroll-effects/effects/waterfall.js";
+import "@polymer/app-layout/app-toolbar/app-toolbar.js";
+import { menuIcon } from "./my-icons.js";
+import "./snack-bar.js";
 
-@customElement('my-app')
+@customElement("my-app")
 export class MyApp extends connect(store)(LitElement) {
-  @property({type: String})
-  appTitle = '';
+  @property({ type: String })
+  appTitle = "";
 
-  @property({type: String})
-  private _page = '';
+  @property({ type: String })
+  private _page = "";
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   private _drawerOpened = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   private _snackbarOpened = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   private _offline = false;
 
   static get styles() {
@@ -99,7 +102,7 @@ export class MyApp extends connect(store)(LitElement) {
         }
 
         [main-title] {
-          font-family: 'Pacifico';
+          font-family: "Pacifico";
           text-transform: lowercase;
           font-size: 30px;
           /* In the narrow layout, the toolbar is offset by the width of the
@@ -217,10 +220,19 @@ export class MyApp extends connect(store)(LitElement) {
 
       <!-- Main content -->
       <main role="main" class="main-content">
-        <login-page class="page" ?active="${this._page === 'login'}"></login-page>
-        <top-page class="page" ?active="${this._page === 'top'}"></top-page>
-        <history-page class="page" ?active="${this._page === 'history'}"></history-page>
-        <my-view404 class="page" ?active="${this._page === 'view404'}"></my-view404>
+        <login-page
+          class="page"
+          ?active="${this._page === "login"}"
+        ></login-page>
+        <top-page class="page" ?active="${this._page === "top"}"></top-page>
+        <history-page
+          class="page"
+          ?active="${this._page === "history"}"
+        ></history-page>
+        <my-view404
+          class="page"
+          ?active="${this._page === "view404"}"
+        ></my-view404>
       </main>
 
       <footer>
@@ -228,7 +240,7 @@ export class MyApp extends connect(store)(LitElement) {
       </footer>
 
       <snack-bar ?active="${this._snackbarOpened}">
-        You are now ${this._offline ? 'offline' : 'online'}.
+        You are now ${this._offline ? "offline" : "online"}.
       </snack-bar>
     `;
   }
@@ -241,15 +253,18 @@ export class MyApp extends connect(store)(LitElement) {
   }
 
   protected firstUpdated() {
-    installRouter((location) => store.dispatch(navigate(decodeURIComponent(location.pathname))));
-    installOfflineWatcher((offline) => store.dispatch(updateOffline(offline)));
-    installMediaQueryWatcher(`(min-width: 460px)`,
-        () => store.dispatch(updateDrawerState(false)));
+    installRouter(location =>
+      store.dispatch(navigate(decodeURIComponent(location.pathname)))
+    );
+    installOfflineWatcher(offline => store.dispatch(updateOffline(offline)));
+    installMediaQueryWatcher(`(min-width: 460px)`, () =>
+      store.dispatch(updateDrawerState(false))
+    );
   }
 
   protected updated(changedProps: PropertyValues) {
-    if (changedProps.has('_page')) {
-      const pageTitle = this.appTitle + ' - ' + this._page;
+    if (changedProps.has("_page")) {
+      const pageTitle = this.appTitle + " - " + this._page;
       updateMetadata({
         title: pageTitle,
         description: pageTitle
