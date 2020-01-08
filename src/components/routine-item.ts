@@ -39,6 +39,14 @@ export class RoutineItem extends connect(store)(LitElement) {
   @property({ type: Object })
   private routine = {};
 
+  @property({ type: Object })
+  private periodMap = {
+    day: { display: '日', days: 1 },
+    week: { display: '週', days: 7 },
+    month: { display: '月', days: 30 },
+    year: { display: '年', days: 365 },
+  };
+
   static get styles() {
     return [
       SharedStyles,
@@ -116,7 +124,7 @@ export class RoutineItem extends connect(store)(LitElement) {
       <paper-card>
         <div class="card-content">
           <b class="title" @click="${ this.toggleCollapse }">${ this.routine.name }</b>
-          <p class="lead">${ this.periodShortName(this.routine.period) } ${ this.routine.times }ペース</p>
+          <p class="lead">${ this.periodMap[this.routine.period].display } ${ this.routine.times }ペース</p>
 
           <div class="item-wrapper">
             <div class="item"><p class="category">あれから</p><p class="number">${ this.fromLastDay(this.routine.records) }</p></div>
@@ -148,7 +156,6 @@ export class RoutineItem extends connect(store)(LitElement) {
 
   constructor() {
     super();
-    
   }
 
   // This is called every time something is updated in the store.
@@ -158,26 +165,6 @@ export class RoutineItem extends connect(store)(LitElement) {
 
     if(this.shadowRoot.getElementById("modalSetting")){
       this.shadowRoot.getElementById("modalSetting").close();
-    }
-  }
-
-  private periodShortName(period){
-    switch(period){
-      case 'day':
-        return '日';
-        break;
-      case 'week':
-        return '週';
-        break;
-      case 'month':
-        return '月';
-        break;
-      case 'year':
-        return '年';
-        break;
-      default:
-        return '';
-        break
     }
   }
 
@@ -196,24 +183,7 @@ export class RoutineItem extends connect(store)(LitElement) {
     const firstDay = Object.keys(r.records).reduce( (pre, cur) => pre > cur? cur: pre, moment().format() );
     const fromFirstDay = moment().diff(moment(firstDay), 'days');
     const times = Object.keys(r.records).length;
-    let period;
-    switch(r.period){
-      case 'day':
-        period = 1;
-        break;
-      case 'week':
-        period = 7;
-        break;
-      case 'month':
-        period = 30;
-        break;
-      case 'year':
-        period = 365;
-        break;
-      default:
-        period = 1;
-        break
-    }
+    let period = this.periodMap[r.period].days;
     return Math.round(times / (fromFirstDay + 1) * period * 10) / 10;
   }
 
