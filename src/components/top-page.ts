@@ -22,6 +22,8 @@ import { SharedStyles } from './shared-styles.js';
 // compornents
 import '../utils/loading-image.js';
 import '@polymer/paper-dialog/paper-dialog.js';
+import '@polymer/iron-icons/iron-icons.js';
+import '@polymer/paper-icon-button/paper-icon-button.js';
 import './routine-register.js';
 import './routine-list.js';
 
@@ -47,6 +49,16 @@ export class TopPage extends connect(store)(PageViewElement) {
           overflow: auto;
           margin: 0;
         }
+
+        .control {
+          text-align: right;
+        }
+        .add-btn {
+          width: 4em;
+          height: 4em;
+          padding: 0;
+          color: var(--app-dark-text-color);
+        }
       `
     ];
   }
@@ -55,7 +67,9 @@ export class TopPage extends connect(store)(PageViewElement) {
     return html`
       <section>
         <routine-list></routine-list>
-        <button @click="${this.openRoutineRegister}">追加</button>
+        <div class="control">
+          <paper-icon-button class="add-btn" icon="add-circle-outline" @click="${this.openRoutineRegister}">追加</paper-icon-button>
+        </div>
       </section>
 
       <paper-dialog id="modal" class="modal" modal>
