@@ -39,14 +39,6 @@ export class RoutineItem extends connect(store)(LitElement) {
   @property({ type: Object })
   private routine = {};
 
-  @property({ type: Object })
-  private periodMap = {
-    day: { display: '日', days: 1 },
-    week: { display: '週', days: 7 },
-    month: { display: '月', days: 30 },
-    year: { display: '年', days: 365 },
-  };
-
   static get styles() {
     return [
       SharedStyles,
@@ -124,11 +116,11 @@ export class RoutineItem extends connect(store)(LitElement) {
       <paper-card>
         <div class="card-content">
           <b class="title" @click="${ this.toggleCollapse }">${ this.routine.name }</b>
-          <p class="lead">${ this.periodMap[this.routine.period].display } ${ this.routine.times }ペース</p>
+          <p class="lead">${ this.routine.periodDisplay } ${ this.routine.times }ペース</p>
 
           <div class="item-wrapper">
             <div class="item"><p class="category">あれから</p><p class="number">${ this.fromLastDay(this.routine.records) }</p></div>
-            <div class="item"><p class="category">ペース</p><p class="number">${ this.calcPace(this.routine) }</p></div>
+            <div class="item"><p class="category">ペース</p><p class="number">${ this.routine.pace }</p></div>
           </div>
 
           <iron-collapse class="button-wrapper" id="collapse" opend="false">
@@ -174,17 +166,6 @@ export class RoutineItem extends connect(store)(LitElement) {
     }
     const lastDay = Object.keys(records).reduce( (pre, cur) => pre < cur? cur: pre, '' );
     return moment().diff(moment(lastDay), 'days');
-  }
-
-  private calcPace(r){
-    if(!r || !r.records){
-      return;
-    }
-    const firstDay = Object.keys(r.records).reduce( (pre, cur) => pre > cur? cur: pre, moment().format() );
-    const fromFirstDay = moment().diff(moment(firstDay), 'days');
-    const times = Object.keys(r.records).length;
-    let period = this.periodMap[r.period].days;
-    return Math.round(times / (fromFirstDay + 1) * period * 10) / 10;
   }
 
   private toggleCollapse() {
