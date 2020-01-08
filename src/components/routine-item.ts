@@ -116,7 +116,7 @@ export class RoutineItem extends connect(store)(LitElement) {
       <paper-card>
         <div class="card-content">
           <b class="title" @click="${ this.toggleCollapse }">${ this.routine.name }</b>
-          <p class="lead">${ this.spanShortName(this.routine.span) } ${ this.routine.frequency }ペース</p>
+          <p class="lead">${ this.periodShortName(this.routine.period) } ${ this.routine.times }ペース</p>
 
           <div class="item-wrapper">
             <div class="item"><p class="category">あれから</p><p class="number">${ this.fromLastDay(this.routine.records) }</p></div>
@@ -161,8 +161,8 @@ export class RoutineItem extends connect(store)(LitElement) {
     }
   }
 
-  private spanShortName(span){
-    switch(span){
+  private periodShortName(period){
+    switch(period){
       case 'day':
         return '日';
         break;
@@ -196,25 +196,25 @@ export class RoutineItem extends connect(store)(LitElement) {
     const firstDay = Object.keys(r.records).reduce( (pre, cur) => pre > cur? cur: pre, moment().format() );
     const fromFirstDay = moment().diff(moment(firstDay), 'days');
     const times = Object.keys(r.records).length;
-    let span;
-    switch(r.span){
+    let period;
+    switch(r.period){
       case 'day':
-        span = 1;
+        period = 1;
         break;
       case 'week':
-        span = 7;
+        period = 7;
         break;
       case 'month':
-        span = 30;
+        period = 30;
         break;
       case 'year':
-        span = 365;
+        period = 365;
         break;
       default:
-        span = 1;
+        period = 1;
         break
     }
-    return times / (fromFirstDay + 1) * span;
+    return times / (fromFirstDay + 1) * period;
   }
 
   private toggleCollapse() {

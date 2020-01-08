@@ -118,9 +118,9 @@ export class RoutineRegister extends connect(store)(LitElement) {
           <paper-input label="Name" id="name" type="text" value="${this.routine.name?this.routine.name:""}"></paper-input>
 
           <div class="select-area">
-            <label class="title" for="span">Period</label>
+            <label class="title" for="period">Period</label>
             <div class="inner">
-              <select id="span">
+              <select id="period">
                 <option value="">--Please choose an option--</option>
                 ${this.routine.span === 'day'?
                   html`<option value="day" selected>日</option>`:
@@ -138,7 +138,7 @@ export class RoutineRegister extends connect(store)(LitElement) {
             </div>
           </div>
 
-          <paper-input label="Times" id="frequency" type="number" value="${this.routine.frequency?this.routine.frequency:""}"></paper-input>
+          <paper-input label="Times" id="times" type="number" value="${this.routine.times?this.routine.times:""}"></paper-input>
 
           <div class="button-area">
             ${this.routine.id?
@@ -155,10 +155,10 @@ export class RoutineRegister extends connect(store)(LitElement) {
 
   private registRoutine(){
     const name = this.shadowRoot.getElementById("name").value;
-    const span = this.shadowRoot.getElementById("span").value;
-    const frequency = this.shadowRoot.getElementById("frequency").value;
+    const period = this.shadowRoot.getElementById("period").value;
+    const times = this.shadowRoot.getElementById("times").value;
     const datetime = moment().format();
-    const routine = { name, span, frequency, datetime };
+    const routine = { name, period, times, datetime };
     firebase
       .firestore()
       .collection("users")
@@ -171,8 +171,8 @@ export class RoutineRegister extends connect(store)(LitElement) {
   private updateRoutine(){
     const newRoutine = this.routine;
     newRoutine.name = this.shadowRoot.getElementById("name").value;
-    newRoutine.span = this.shadowRoot.getElementById("span").value;
-    newRoutine.frequency = this.shadowRoot.getElementById("frequency").value;
+    newRoutine.period = this.shadowRoot.getElementById("period").value;
+    newRoutine.times = this.shadowRoot.getElementById("times").value;
     newRoutine.datetime = moment().format();
     firebase
       .firestore()
