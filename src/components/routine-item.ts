@@ -39,6 +39,9 @@ export class RoutineItem extends connect(store)(LitElement) {
   @property({ type: Object })
   private routine = {};
 
+  @property({ type: Boolean })
+  private opened = false;
+
   static get styles() {
     return [
       SharedStyles,
@@ -107,6 +110,23 @@ export class RoutineItem extends connect(store)(LitElement) {
           width: 80px;
           height: 80px;
         }
+
+        .card-header {
+          margin: 0;
+          padding: .5em 1em;
+          border-bottom: 1px solid #eee;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .toggle-icon {
+          box-sizing: content-box; 
+          width: 2em;
+          height: 2em;
+          color: var(--app-drawer-selected-color);
+          margin: 0;
+          padding: 0;
+        }
         `
     ];
   }
@@ -114,10 +134,18 @@ export class RoutineItem extends connect(store)(LitElement) {
   protected render() {
     return html`
       <paper-card>
+        <div class="card-header" @click="${ this.toggleCollapse }">
+          <div>
+            <b class="title">${ this.routine.name }</b>
+            <p class="lead">${ this.routine.periodDisplay } ${ this.routine.times }ペース</p>
+          </div>
+          <div>
+            ${this.opened?
+              html`<paper-icon-button class="toggle-icon" icon="expand-less"></paper-icon-button>`:
+              html`<paper-icon-button class="toggle-icon" icon="expand-more"></paper-icon-button>`}
+          </div>
+        </div>
         <div class="card-content">
-          <b class="title" @click="${ this.toggleCollapse }">${ this.routine.name }</b>
-          <p class="lead">${ this.routine.periodDisplay } ${ this.routine.times }ペース</p>
-
           <div class="item-wrapper">
             <div class="item"><p class="category">あれから</p><p class="number">${ this.fromLastDay(this.routine.records) }</p></div>
             <div class="item"><p class="category">ペース</p><p class="number">${ this.routine.pace }</p></div>
@@ -169,6 +197,7 @@ export class RoutineItem extends connect(store)(LitElement) {
   }
 
   private toggleCollapse() {
+    this.opened = !this.opened;
     this.shadowRoot.getElementById('collapse').toggle();
   }
 
