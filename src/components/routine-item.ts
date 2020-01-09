@@ -13,7 +13,8 @@ import { setCurrent } from "../actions/routines";
 import user from "../reducers/user.js";
 import routines from "../reducers/routines";
 store.addReducers({
-  user, routines
+  user,
+  routines
 });
 
 // These are the shared styles needed by this element.
@@ -24,6 +25,8 @@ import firebase from "../utils/firebase.js";
 
 // compornents
 import "../utils/loading-image.js";
+import "./routine-header.js";
+import "./routine-figures.js";
 import "@polymer/iron-collapse/iron-collapse.js";
 import "@polymer/paper-card/paper-card.js";
 import "@polymer/paper-dialog/paper-dialog.js";
@@ -59,50 +62,13 @@ export class RoutineItem extends connect(store)(LitElement) {
           margin: 0;
         }
 
-        paper-card {
+        .card {
           display: block;
           margin: 0 0 20px;
           border-top: 6px solid var(--app-primary-color);
         }
 
-        paper-card .title {
-          font-size: var(--app-large-text-size);
-          font-weight: normal;
-        }
-
-        paper-card .lead {
-          font-size: var(--app-small-text-size);
-          color: var(--app-drawer-selected-color);
-          margin: 0;
-        }
-
-        paper-card .item-wrapper {
-          display: flex;
-          justify-content: center;
-          margin: 20px 0 0;
-        }
-
-        paper-card .item-wrapper .item {
-          width: 20%;
-          min-width: 80px;
-          padding: 15px 10px;
-          margin: 0 5px;
-          border-radius: 2px;
-          background-color: var(--app-primary-color);
-          color: var(--app-light-text-color);
-          text-align: center;
-        }
-
-        paper-card .item-wrapper .category {
-          margin: 0;
-          font-size: var(--app-small-text-size);
-        }
-
-        paper-card .item-wrapper .number {
-          margin: 0;
-          font-size: 30px;
-        }
-        paper-card .button-wrapper {
+        .button-wrapper {
           display: flex;
           justify-content: space-around;
           margin: 2em 0 0;
@@ -136,7 +102,7 @@ export class RoutineItem extends connect(store)(LitElement) {
         .history {
           list-style: none;
           margin: 0;
-          padding:0;
+          padding: 0;
           height: 5em;
           overflow-y: hidden;
         }
@@ -155,14 +121,9 @@ export class RoutineItem extends connect(store)(LitElement) {
 
   protected render() {
     return html`
-      <paper-card>
+      <paper-card class="card">
         <div class="card-header" @click="${this.toggleCollapse}">
-          <div>
-            <b class="title">${this.routine.name}</b>
-            <p class="lead">${this.routine.periodDisplay} ${
-      this.routine.times
-    }ペース</p>
-          </div>
+          <routine-header .routine="${this.routine}"></routine-header>
           <div>
             ${
               this.opened
@@ -182,14 +143,7 @@ export class RoutineItem extends connect(store)(LitElement) {
           </div>
         </div>
         <div class="card-content">
-          <div class="item-wrapper">
-            <div class="item"><p class="category">あれから</p><p class="number">${this.fromLastDay(
-              this.routine.records
-            )}</p></div>
-            <div class="item"><p class="category">ペース</p><p class="number">${
-              this.routine.pace
-            }</p></div>
-          </div>
+          <routine-figures .routine="${this.routine}"></routine-figures>
 
           <iron-collapse id="collapse" opend="false">
             <div class="button-wrapper">
@@ -205,11 +159,17 @@ export class RoutineItem extends connect(store)(LitElement) {
             </div>
             <div class="history-header">履歴</div>
             <ul class="history">
-              ${Object.keys(this.routine.records).map(datetime => html`
-                <li class="history-item">${moment(datetime).format("YYYY/MM/DD")}</li>
-              `)}
+              ${Object.keys(this.routine.records).map(
+                datetime => html`
+                  <li class="history-item">
+                    ${moment(datetime).format("YYYY/MM/DD")}
+                  </li>
+                `
+              )}
             </ul>
-            <div class="history-more" @click="${this.moveToHistory}">もっと見る</div>
+            <div class="history-more" @click="${
+              this.moveToHistory
+            }">もっと見る</div>
           </iron-collapse>
         </div>
       </paper-card>
@@ -242,17 +202,6 @@ export class RoutineItem extends connect(store)(LitElement) {
     if (this.shadowRoot.getElementById("modalSetting")) {
       this.shadowRoot.getElementById("modalSetting").close();
     }
-  }
-
-  private fromLastDay(records) {
-    if (!records || !Object.keys(records)) {
-      return;
-    }
-    const lastDay = Object.keys(records).reduce(
-      (pre, cur) => (pre < cur ? cur : pre),
-      ""
-    );
-    return moment().diff(moment(lastDay), "days");
   }
 
   private toggleCollapse() {

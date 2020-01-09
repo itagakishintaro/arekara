@@ -21,9 +21,9 @@ import { SharedStyles } from './shared-styles.js';
 
 // compornents
 import '../utils/loading-image.js';
+import "./routine-header.js";
+import "./routine-figures.js";
 import '@polymer/paper-dialog/paper-dialog.js';
-import './routine-register.js';
-import './routine-list.js';
 
 @customElement('history-page')
 export class HistoryPage extends connect(store)(PageViewElement) {
@@ -31,10 +31,7 @@ export class HistoryPage extends connect(store)(PageViewElement) {
   private loadingDisplay = 'none';
 
   @property({ type: Object })
-  private user = {};
-
-  @property({ type: Object })
-  private currentRoutine = {};
+  private routine = {};
 
   static get styles() {
     return [
@@ -47,9 +44,9 @@ export class HistoryPage extends connect(store)(PageViewElement) {
   protected render() {
     return html`
       <section>
-        <h1>${this.currentRoutine.name}</h1>
+        <h1>${this.routine.name}</h1>
         <ul>
-          ${Object.keys(this.currentRoutine.records).map(datetime => html`
+          ${Object.keys(this.routine.records).map(datetime => html`
             <li>${moment(datetime).format("YYYY/MM/DD")}</li>
           `)}
         </ul>
@@ -65,7 +62,6 @@ export class HistoryPage extends connect(store)(PageViewElement) {
 
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
-    console.log("-----", Object.keys(state.routines.current.records));
-    this.setAttribute('currentRoutine', JSON.stringify(state.routines.current));
+    this.setAttribute('routine', JSON.stringify(state.routines.current));
   }
 }
