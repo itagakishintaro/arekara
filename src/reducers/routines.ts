@@ -1,17 +1,21 @@
 import { Reducer } from 'redux';
-import { REGIST } from '../actions/routines.js';
+import { SET_CURRENT } from '../actions/routines.js';
 import { RootAction } from '../store.js';
 
-export interface RoutineState {
-  routines: Array;
+export interface RoutinesState {
+  routines: Array,
+  current: Object
 }
 
-const INITIAL_STATE: RoutineState = [];
+const INITIAL_STATE: RoutinesState = {};
 
-const routines: Reducer<RoutineState, RootAction> = (state = INITIAL_STATE, action) => {
+const routines: Reducer<RoutinesState, RootAction> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case REGIST:
-      return state;
+    case SET_CURRENT:
+      return {
+        ...state,
+        current: action.routine
+      };
     default:
       return state;
   }

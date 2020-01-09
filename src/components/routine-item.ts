@@ -7,11 +7,13 @@ import { store } from "../store.js";
 
 // These are the actions needed by this element.
 import { navigate } from "../actions/app.js";
+import { setCurrent } from "../actions/routines";
 
 // We are lazy loading its reducer.
 import user from "../reducers/user.js";
+import routines from "../reducers/routines";
 store.addReducers({
-  user
+  user, routines
 });
 
 // These are the shared styles needed by this element.
@@ -103,7 +105,7 @@ export class RoutineItem extends connect(store)(LitElement) {
         paper-card .button-wrapper {
           display: flex;
           justify-content: space-around;
-          margin: 40px 0 0;
+          margin: 2em 0 0;
         }
         paper-icon-button {
           display: block;
@@ -126,6 +128,26 @@ export class RoutineItem extends connect(store)(LitElement) {
           color: var(--app-drawer-selected-color);
           margin: 0;
           padding: 0;
+        }
+        .history-header {
+          margin: 1em 0 0 0;
+          border-bottom: 1px solid #eee;
+        }
+        .history {
+          list-style: none;
+          margin: 0;
+          padding:0;
+          height: 5em;
+          overflow-y: hidden;
+        }
+        .history-item {
+          border-bottom: 1px solid #eee;
+        }
+        .history-more {
+          text-align: center;
+          margin: 1em 0;
+          font-size: var(--app-small-text-size);
+          color: var(--app-drawer-selected-color);
         }
       `
     ];
@@ -169,19 +191,25 @@ export class RoutineItem extends connect(store)(LitElement) {
             }</p></div>
           </div>
 
-          <iron-collapse class="button-wrapper" id="collapse" opend="false">
-            <paper-icon-button icon="check-circle" title="チェック" @click="${
-              this.record
-            }">Record</paper-icon-button>
-            <paper-icon-button icon="date-range" title="カレンダー登録" @click="${
-              this.openCalendar
-            }">Calendar</paper-icon-button>
-            <paper-icon-button icon="settings" title="設定" @click="${
-              this.openSetting
-            }">Setting</paper-icon-button>
-            <!--<paper-icon-button icon="history" title="履歴" @click="${
-              this.moveToHistory
-            }">History</paper-icon-button>-->
+          <iron-collapse id="collapse" opend="false">
+            <div class="button-wrapper">
+              <paper-icon-button icon="check-circle" title="チェック" @click="${
+                this.record
+              }">Record</paper-icon-button>
+              <paper-icon-button icon="date-range" title="カレンダー登録" @click="${
+                this.openCalendar
+              }">Calendar</paper-icon-button>
+              <paper-icon-button icon="settings" title="設定" @click="${
+                this.openSetting
+              }">Setting</paper-icon-button>
+            </div>
+            <div class="history-header">履歴</div>
+            <ul class="history">
+              ${Object.keys(this.routine.records).map(datetime => html`
+                <li class="history-item">${moment(datetime).format("YYYY/MM/DD")}</li>
+              `)}
+            </ul>
+            <div class="history-more" @click="${this.moveToHistory}">もっと見る</div>
           </iron-collapse>
         </div>
       </paper-card>
@@ -267,12 +295,8 @@ export class RoutineItem extends connect(store)(LitElement) {
     this.shadowRoot.getElementById("modalSetting").open();
   }
 
-  private closeSetting() {
-    this.shadowRoot.getElementById("modalSetting").close();
-  }
-
   private moveToHistory() {
-    store.dispatch(setTargetRoutine(this.routine));
+    store.dispatch(setCurrent(this.routine));
     store.dispatch(navigate("/history"));
   }
 }

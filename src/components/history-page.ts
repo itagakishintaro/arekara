@@ -34,7 +34,7 @@ export class HistoryPage extends connect(store)(PageViewElement) {
   private user = {};
 
   @property({ type: Object })
-  private targetRoutine = {};
+  private currentRoutine = {};
 
   static get styles() {
     return [
@@ -47,9 +47,9 @@ export class HistoryPage extends connect(store)(PageViewElement) {
   protected render() {
     return html`
       <section>
-        <h1>${this.targetRoutine.name}</h1>
+        <h1>${this.currentRoutine.name}</h1>
         <ul>
-          ${Object.keys(this.targetRoutine.records).map(datetime => html`
+          ${Object.keys(this.currentRoutine.records).map(datetime => html`
             <li>${moment(datetime).format("YYYY/MM/DD")}</li>
           `)}
         </ul>
@@ -65,7 +65,7 @@ export class HistoryPage extends connect(store)(PageViewElement) {
 
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
-    console.log("-----", Object.keys(state.setting.targetRoutine.records));
-    this.setAttribute('targetRoutine', JSON.stringify(state.setting.targetRoutine));
+    console.log("-----", Object.keys(state.routines.current.records));
+    this.setAttribute('currentRoutine', JSON.stringify(state.routines.current));
   }
 }

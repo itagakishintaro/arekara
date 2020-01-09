@@ -1,11 +1,12 @@
 import { Action, ActionCreator } from 'redux';
-export const REGIST = 'REGIST';
+export const SET_CURRENT = 'SET_CURRENT';
 
-export interface RoutineActionRegist extends Action<'REGIST'> {};
-export type RoutineAction = RoutineActionRegist;
+export interface RoutinesActionSetCurrent extends Action<'SET_CURRENT'> {};
+export type RoutinesAction = RoutinesActionSetCurrent;
 
-export const regist: ActionCreator<RoutineActionRegist> = () => {
+export const setCurrent: ActionCreator<RoutinesActionSetCurrent> = routine => {
   return {
-    type: REGIST
+    type: SET_CURRENT,
+    routine
   };
 };
