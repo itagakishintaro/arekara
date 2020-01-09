@@ -73,6 +73,16 @@ export class HistoryPage extends connect(store)(PageViewElement) {
           width: 1em;
           height: 1em;
         }
+        .back {
+          width: 100%;
+          text-align: right;
+          margin-top: 1em;
+        }
+        .back-icon {
+          width: 4em;
+          height: 4em;
+          color: var(--app-drawer-selected-color);
+        }
       `
     ];
   }
@@ -100,6 +110,14 @@ export class HistoryPage extends connect(store)(PageViewElement) {
             `
           )}
         </ul>
+        <div class="back">
+          <paper-icon-button
+            class="back-icon"
+            icon="subdirectory-arrow-left"
+            @click="${this.back}"
+          ></paper-icon-button>
+        </div>
+        
       </section>
 
       <paper-dialog id="modalCalendar" class="modal" modal>
@@ -119,22 +137,27 @@ export class HistoryPage extends connect(store)(PageViewElement) {
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
     this.user = state.user;
-    if(state.routines && state.routines.current){
-      this.setAttribute('routine', JSON.stringify(state.routines.current));
+    if (state.routines && state.routines.current) {
+      this.setAttribute("routine", JSON.stringify(state.routines.current));
     }
 
-    const newRoutine = state.routines.routines.filter(r => r.id === this.routine.id)[0];
-    if( JSON.stringify(this.routine.records) !== JSON.stringify(newRoutine.records) ){
-      this.setAttribute('routine', JSON.stringify(newRoutine));
+    const newRoutine = state.routines.routines.filter(
+      r => r.id === this.routine.id
+    )[0];
+    if (
+      JSON.stringify(this.routine.records) !==
+      JSON.stringify(newRoutine.records)
+    ) {
+      this.setAttribute("routine", JSON.stringify(newRoutine));
     }
   }
 
   private openCalendar(e) {
-    this.setAttribute(
-      "selected",
-      e.currentTarget.dataset.datetime
+    this.setAttribute("selected", e.currentTarget.dataset.datetime);
+    this.shadowRoot.getElementById("datetime").value = this.selected.substring(
+      0,
+      16
     );
-    this.shadowRoot.getElementById("datetime").value = this.selected.substring(0, 16);
     this.shadowRoot.getElementById("modalCalendar").open();
   }
 
@@ -154,9 +177,19 @@ export class HistoryPage extends connect(store)(PageViewElement) {
       .collection("routines")
       .doc(this.routine.id)
       .set(
-        { records: { [oldDatetime]: firebase.firestore.FieldValue.delete(), [newDatetime]: true } },
+        {
+          records: {
+            [oldDatetime]: firebase.firestore.FieldValue.delete(),
+            [newDatetime]: true
+          }
+        },
         { merge: true }
       );
-      this.closeCalendar();
+    this.closeCalendar();
+  }
+
+  private back() {
+    scrollTo(0, 0);
+    store.dispatch(navigate("/top"));
   }
 }
