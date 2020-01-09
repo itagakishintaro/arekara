@@ -1,5 +1,5 @@
 import { Reducer } from 'redux';
-import { SET_CURRENT } from '../actions/routines.js';
+import { SET_CURRENT, SET_ROUTINES } from '../actions/routines.js';
 import { RootAction } from '../store.js';
 
 export interface RoutinesState {
@@ -15,6 +15,11 @@ const routines: Reducer<RoutinesState, RootAction> = (state = INITIAL_STATE, act
       return {
         ...state,
         current: action.routine
+      };
+    case SET_ROUTINES:
+      return {
+        ...state,
+        routines: action.routines
       };
     default:
       return state;

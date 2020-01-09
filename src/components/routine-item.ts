@@ -162,7 +162,7 @@ export class RoutineItem extends connect(store)(LitElement) {
               ${Object.keys(this.routine.records).map(
                 datetime => html`
                   <li class="history-item">
-                    ${moment(datetime).format("YYYY/MM/DD")}
+                    ${moment(datetime).format("YYYY/MM/DD HH:mm")}
                   </li>
                 `
               )}
@@ -197,7 +197,6 @@ export class RoutineItem extends connect(store)(LitElement) {
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
     this.user = state.user;
-    console.log(state);
 
     if (this.shadowRoot.getElementById("modalSetting")) {
       this.shadowRoot.getElementById("modalSetting").close();

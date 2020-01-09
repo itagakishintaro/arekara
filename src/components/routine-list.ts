@@ -5,10 +5,14 @@ import { connect } from "pwa-helpers/connect-mixin.js";
 // This element is connected to the Redux store.
 import { store } from "../store.js";
 
+// These are the actions needed by this element.
+import { setRoutines } from "../actions/routines";
+
 // We are lazy loading its reducer.
 import user from "../reducers/user.js";
+import routines from "../reducers/routines";
 store.addReducers({
-  user
+  user, routines
 });
 
 // These are the shared styles needed by this element.
@@ -39,6 +43,9 @@ export class RoutineList extends connect(store)(LitElement) {
     month: { display: "月", days: 30 },
     year: { display: "年", days: 365 }
   };
+
+  @property({ type: Boolean })
+  private watching = false;
 
   static get styles() {
     return [SharedStyles, css``];
@@ -71,20 +78,22 @@ export class RoutineList extends connect(store)(LitElement) {
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
     this.user = state.user;
-    console.log(state);
-    if (this.user.uid) {
+    if (this.user.uid && !this.watching) {
       this.watchRoutines();
+    }
+    if(state.routine && state.routines.routiens){
+      this.setAttribute("routines", JSON.stringify(state.routines.routines));
     }
   }
 
   private watchRoutines() {
+    this.watching = true;
     firebase
       .firestore()
       .collection("users")
       .doc(this.user.uid)
       .collection("routines")
       .onSnapshot(snapshot => {
-        console.log("Current data: ", snapshot.docs);
         if (snapshot.empty) {
           return;
         }
@@ -97,6 +106,8 @@ export class RoutineList extends connect(store)(LitElement) {
           };
           return Object.assign(r, additional);
         });
+
+        store.dispatch(setRoutines(this.routines));
       });
   }
 

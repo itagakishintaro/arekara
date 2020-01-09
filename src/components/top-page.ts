@@ -96,7 +96,6 @@ export class TopPage extends connect(store)(PageViewElement) {
 
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
-    console.log("State Changed", state, state.user, state.routines);
     if (state.app.page !== "login" && (!state.user || !state.user.uid)) {
       store.dispatch(navigate("/login"));
     }
