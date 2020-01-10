@@ -5,9 +5,6 @@ import { connect } from "pwa-helpers/connect-mixin.js";
 // This element is connected to the Redux store.
 import { store } from "../store.js";
 
-// Actions
-import { regist } from "../actions/routines.js";
-
 // We are lazy loading its reducer.
 import user from "../reducers/user.js";
 store.addReducers({
@@ -127,28 +124,28 @@ export class RoutineRegister extends connect(store)(LitElement) {
             <div class="inner">
               <select id="period">
                 <option value="">--Please choose an option--</option>
-                ${this.routine.span === "day"
+                ${this.routine.period === "day"
                   ? html`
                       <option value="day" selected>日</option>
                     `
                   : html`
                       <option value="day">日</option>
                     `}
-                ${this.routine.span === "week"
+                ${this.routine.period === "week"
                   ? html`
                       <option value="week" selected>週</option>
                     `
                   : html`
                       <option value="week">週</option>
                     `}
-                ${this.routine.span === "month"
+                ${this.routine.period === "month"
                   ? html`
                       <option value="month" selected>月</option>
                     `
                   : html`
                       <option value="month">月</option>
                     `}
-                ${this.routine.span === "year"
+                ${this.routine.period === "year"
                   ? html`
                       <option value="year" selected>年</option>
                     `
@@ -207,11 +204,12 @@ export class RoutineRegister extends connect(store)(LitElement) {
       .doc(this.user.uid)
       .collection("routines")
       .add(routine);
-    store.dispatch(regist());
   }
 
   private updateRoutine() {
-    const newRoutine = this.routine;
+    let newRoutine = this.routine;
+    delete newRoutine.pace;
+    delete newRoutine.periodDisplay;
     newRoutine.name = this.shadowRoot.getElementById("name").value;
     newRoutine.period = this.shadowRoot.getElementById("period").value;
     newRoutine.times = this.shadowRoot.getElementById("times").value;
@@ -223,7 +221,6 @@ export class RoutineRegister extends connect(store)(LitElement) {
       .collection("routines")
       .doc(this.routine.id)
       .set(newRoutine);
-    store.dispatch(regist());
   }
 
   // This is called every time something is updated in the store.

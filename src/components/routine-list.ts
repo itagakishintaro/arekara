@@ -26,6 +26,7 @@ import firebase from "../utils/firebase.js";
 import "../utils/loading-image.js";
 import { periodMap, calcPace } from "../utils/utils.js";
 import "./routine-item.js";
+import "@polymer/paper-toast/paper-toast.js";
 
 @customElement("routine-list")
 export class RoutineList extends connect(store)(LitElement) {
@@ -62,6 +63,8 @@ export class RoutineList extends connect(store)(LitElement) {
         )}
       </div>
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
+      <paper-toast id="toastOk" text="OK!"></paper-toast>
+      <paper-toast id="toastNg" text="Something wrong!!!"></paper-toast>
     `;
   }
 
@@ -91,12 +94,15 @@ export class RoutineList extends connect(store)(LitElement) {
         if (snapshot.empty) {
           return;
         }
+        if(this.routines.length){
+          this.shadowRoot.getElementById("toastOk").open();
+        }
         this.routines = snapshot.docs.map(doc => {
           const r = doc.data();
           const additional = {
             id: doc.id,
             pace: calcPace(r),
-            periodDisplay: periodMap[r.period].display
+            periodDisplay: r.period? periodMap[r.period].display: ""
           };
           return Object.assign(r, additional);
         });

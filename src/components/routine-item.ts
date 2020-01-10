@@ -32,6 +32,7 @@ import "@polymer/paper-card/paper-card.js";
 import "@polymer/paper-dialog/paper-dialog.js";
 import "@polymer/iron-icons/iron-icons.js";
 import "@polymer/paper-icon-button/paper-icon-button.js";
+import "@polymer/paper-toast/paper-toast.js";
 
 @customElement("routine-item")
 export class RoutineItem extends connect(store)(LitElement) {
@@ -159,13 +160,17 @@ export class RoutineItem extends connect(store)(LitElement) {
             </div>
             <div class="history-header">履歴</div>
             <ul class="history">
-              ${Object.keys(this.routine.records).map(
-                datetime => html`
-                  <li class="history-item">
-                    ${moment(datetime).format("YYYY/MM/DD HH:mm")}
-                  </li>
-                `
-              )}
+              ${
+                this.routine.records
+                  ? Object.keys(this.routine.records).map(
+                      datetime => html`
+                        <li class="history-item">
+                          ${moment(datetime).format("YYYY/MM/DD HH:mm")}
+                        </li>
+                      `
+                    )
+                  : ""
+              }
             </ul>
             <div class="history-more" @click="${
               this.moveToHistory
@@ -187,6 +192,8 @@ export class RoutineItem extends connect(store)(LitElement) {
       </paper-dialog>
 
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
+      <paper-toast id="toastOk" text="OK!"></paper-toast>
+      <paper-toast id="toastNg" text="Something wrong!!!"></paper-toast>
     `;
   }
 
@@ -228,7 +235,13 @@ export class RoutineItem extends connect(store)(LitElement) {
       .doc(this.user.uid)
       .collection("routines")
       .doc(this.routine.id)
-      .set({ records: { [datetime]: true } }, { merge: true });
+      .set({ records: { [datetime]: true } }, { merge: true })
+      .then(() => {
+        this.shadowRoot.getElementById("toastOk").open();
+      })
+      .catch(() => {
+        this.shadowRoot.getElementById("toastNg").open();
+      });
   }
 
   private openCalendar() {
