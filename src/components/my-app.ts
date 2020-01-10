@@ -212,7 +212,7 @@ export class MyApp extends connect(store)(LitElement) {
     // Anything that's related to rendering should be done in here.
     return html`
       <!-- Header -->
-      <app-header condenses reveals effects="waterfall">
+      <app-header condenses reveals effects="waterfall" @click="${this.backToTop}">
         <app-toolbar class="toolbar-top">
           <div main-title>${this.appTitle}</div>
         </app-toolbar>
@@ -278,5 +278,10 @@ export class MyApp extends connect(store)(LitElement) {
     this._offline = state.app!.offline;
     this._snackbarOpened = state.app!.snackbarOpened;
     this._drawerOpened = state.app!.drawerOpened;
+  }
+
+  private backToTop() {
+    scrollTo(0, 0);
+    store.dispatch(navigate("/top"));
   }
 }
