@@ -114,11 +114,8 @@ export class RoutineItem extends connect(store)(LitElement) {
         .button-area {
           padding: 0 24px;
         }
-        .custom:hover {
-          background-color: var(--paper-indigo-100);
-        }
-        .indigo {
-          background-color: var(--paper-indigo-500);
+        .main-btn {
+          background-color: var(--app-primary-color);
           color: white;
         }
       `
@@ -201,7 +198,7 @@ export class RoutineItem extends connect(store)(LitElement) {
           "YYYY-MM-DD" + "T00:00"
         )}"></paper-input>
         <div class="button-area">
-          <paper-button raised class="custom indigo" @click="${this.recordWithDatetime}">完了</paper-button>
+          <paper-button raised class="main-btn" @click="${this.recordWithDatetime}">完了</paper-button>
           <paper-button raised dialog-confirm autofocus @click="${this.closeCalendar}">キャンセル</paper-button>
         </div>
       </paper-dialog>

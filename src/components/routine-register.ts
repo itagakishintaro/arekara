@@ -96,12 +96,8 @@ export class RoutineRegister extends connect(store)(LitElement) {
           padding: 20px 0 0;
         }
 
-        .custom:hover {
-          background-color: var(--paper-indigo-100);
-        }
-
-        .indigo {
-          background-color: var(--paper-indigo-500);
+        .main-btn {
+          background-color: var(--app-primary-color);
           color: white;
         }
       `
@@ -168,7 +164,7 @@ export class RoutineRegister extends connect(store)(LitElement) {
               ? html`
                   <paper-button
                     raised
-                    class="custom indigo"
+                    class="main-btn"
                     @click="${this.updateRoutine}"
                     >更新する</paper-button
                   >
@@ -176,7 +172,7 @@ export class RoutineRegister extends connect(store)(LitElement) {
               : html`
                   <paper-button
                     raised
-                    class="custom indigo"
+                    class="main-btn"
                     @click="${this.registRoutine}"
                     >登録する</paper-button
                   >

@@ -65,4 +65,9 @@ export const SharedStyles = css`
     font-size: 30px;
     line-height: 64px;
   }
+
+  paper-input {
+    --paper-input-container-focus-color: var(--app-primary-color);
+    --app-form-color: var(--app-primary-color);
+  }
 `;
