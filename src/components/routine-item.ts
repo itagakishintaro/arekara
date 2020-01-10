@@ -74,7 +74,7 @@ export class RoutineItem extends connect(store)(LitElement) {
           justify-content: space-around;
           margin: 2em 0 0;
         }
-        paper-icon-button {
+        .main-icon {
           display: block;
           width: 80px;
           height: 80px;
@@ -99,6 +99,12 @@ export class RoutineItem extends connect(store)(LitElement) {
         .history-header {
           margin: 1em 0 0 0;
           border-bottom: 1px solid #eee;
+        }
+        .history-jump-icon {
+          margin:0;
+          padding:0;
+          width:1em;
+          height:1em;
         }
         .history {
           list-style: none;
@@ -148,33 +154,45 @@ export class RoutineItem extends connect(store)(LitElement) {
 
           <iron-collapse id="collapse" opend="false">
             <div class="button-wrapper">
-              <paper-icon-button icon="check-circle" title="チェック" @click="${
+              <paper-icon-button class="main-icon" icon="check-circle" title="チェック" @click="${
                 this.record
               }">Record</paper-icon-button>
-              <paper-icon-button icon="date-range" title="カレンダー登録" @click="${
+              <paper-icon-button class="main-icon" icon="date-range" title="カレンダー登録" @click="${
                 this.openCalendar
               }">Calendar</paper-icon-button>
-              <paper-icon-button icon="settings" title="設定" @click="${
+              <paper-icon-button class="main-icon" icon="settings" title="設定" @click="${
                 this.openSetting
               }">Setting</paper-icon-button>
             </div>
-            <div class="history-header">履歴</div>
-            <ul class="history">
-              ${
-                this.routine.records
-                  ? Object.keys(this.routine.records).map(
-                      datetime => html`
-                        <li class="history-item">
-                          ${moment(datetime).format("YYYY/MM/DD HH:mm")}
-                        </li>
-                      `
-                    )
-                  : ""
-              }
-            </ul>
-            <div class="history-more" @click="${
-              this.moveToHistory
-            }">もっと見る</div>
+            ${
+              this.routine.records
+                ? html`
+                    <div class="history-header">
+                      <span>履歴</span>
+                      <paper-icon-button class="history-jump-icon" icon="launch" @click="${this.moveToHistory}"></paper-icon-button>
+                    </div>
+                    <ul class="history">
+                      ${Object.keys(this.routine.records).map(
+                        datetime => html`
+                          <li class="history-item">
+                            ${moment(datetime).format("YYYY/MM/DD HH:mm")}
+                          </li>
+                        `
+                      )}
+                    </ul>
+                    ${3 <= Object.keys(this.routine.records).length
+                      ? html`
+                          <div
+                            class="history-more"
+                            @click="${this.moveToHistory}"
+                          >
+                            もっと見る
+                          </div>
+                        `
+                      : ""}
+                  `
+                : ""
+            }
           </iron-collapse>
         </div>
       </paper-card>
