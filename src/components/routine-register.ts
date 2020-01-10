@@ -96,11 +96,11 @@ export class RoutineRegister extends connect(store)(LitElement) {
           padding: 20px 0 0;
         }
 
-        paper-button.custom:hover {
+        .custom:hover {
           background-color: var(--paper-indigo-100);
         }
 
-        paper-button.indigo {
+        .indigo {
           background-color: var(--paper-indigo-500);
           color: white;
         }

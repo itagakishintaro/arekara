@@ -52,17 +52,6 @@ export class RoutineItem extends connect(store)(LitElement) {
     return [
       SharedStyles,
       css`
-        .modal {
-          position: fixed;
-          top: 5vh;
-          left: 5vw;
-          width: 90vw;
-          max-width: 90vw;
-          height: 90vh;
-          overflow: auto;
-          margin: 0;
-        }
-
         .card {
           display: block;
           margin: 0 0 20px;
@@ -122,6 +111,16 @@ export class RoutineItem extends connect(store)(LitElement) {
           font-size: var(--app-small-text-size);
           color: var(--app-drawer-selected-color);
         }
+        .button-area {
+          padding: 0 24px;
+        }
+        .custom:hover {
+          background-color: var(--paper-indigo-100);
+        }
+        .indigo {
+          background-color: var(--paper-indigo-500);
+          color: white;
+        }
       `
     ];
   }
@@ -172,7 +171,7 @@ export class RoutineItem extends connect(store)(LitElement) {
                       <paper-icon-button class="history-jump-icon" icon="launch" @click="${this.moveToHistory}"></paper-icon-button>
                     </div>
                     <ul class="history">
-                      ${Object.keys(this.routine.records).map(
+                      ${Object.keys(this.routine.records).sort().reverse().map(
                         datetime => html`
                           <li class="history-item">
                             ${moment(datetime).format("YYYY/MM/DD HH:mm")}
@@ -198,11 +197,13 @@ export class RoutineItem extends connect(store)(LitElement) {
       </paper-card>
 
       <paper-dialog id="modalCalendar" class="modal" modal>
-        <input id="datetime" type="datetime-local" value="${moment().format(
+        <paper-input id="datetime" type="datetime-local" value="${moment().format(
           "YYYY-MM-DD" + "T00:00"
-        )}"></input>
-        <button @click="${this.recordWithDatetime}">完了</button>
-        <button @click="${this.closeCalendar}">キャンセル</button>
+        )}"></paper-input>
+        <div class="button-area">
+          <paper-button raised class="custom indigo" @click="${this.recordWithDatetime}">完了</paper-button>
+          <paper-button raised dialog-confirm autofocus @click="${this.closeCalendar}">キャンセル</paper-button>
+        </div>
       </paper-dialog>
 
       <paper-dialog id="modalSetting" class="modal" modal>

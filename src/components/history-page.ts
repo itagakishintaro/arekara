@@ -84,6 +84,16 @@ export class HistoryPage extends connect(store)(PageViewElement) {
           height: 4em;
           color: var(--app-drawer-selected-color);
         }
+        .button-area {
+            padding: 0 24px;
+          }
+        .custom:hover {
+            background-color: var(--paper-indigo-100);
+        }
+        .indigo {
+            background-color: var(--paper-indigo-500);
+            color: white;
+        }
       `
     ];
   }
@@ -130,9 +140,11 @@ export class HistoryPage extends connect(store)(PageViewElement) {
         
       </section>
       <paper-dialog id="modalCalendar" class="modal" modal>
-        <input id="datetime" type="datetime-local"></input>
-        <button @click="${this.updateRecord}">完了</button>
-        <button @click="${this.closeCalendar}">キャンセル</button>
+        <paper-input id="datetime" type="datetime-local"></paper-input>
+        <div class="button-area">
+          <paper-button raised class="custom indigo" @click="${this.updateRecord}">完了</paper-button>
+          <paper-button raised dialog-confirm autofocus @click="${this.closeCalendar}">キャンセル</paper-button>
+        </div>
       </paper-dialog>
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
     `;
