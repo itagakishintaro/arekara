@@ -94,21 +94,24 @@ export class HistoryPage extends connect(store)(PageViewElement) {
         <routine-figures .routine="${this.routine}"></routine-figures>
         <div class="history-header">履歴</div>
         <ul class="history">
-          ${Object.keys(this.routine.records).map(
-            datetime => html`
-              <li
-                class="history-item"
-                @click="${this.openCalendar}"
-                data-datetime="${datetime}"
-              >
-                <div>${moment(datetime).format("YYYY/MM/DD HH:mm")}</div>
-                <paper-icon-button
-                  class="right-icon"
-                  icon="chevron-right"
-                ></paper-icon-button>
-              </li>
-            `
-          )}
+          ${Object.keys(this.routine.records)
+            .sort()
+            .reverse()
+            .map(
+              datetime => html`
+                <li
+                  class="history-item"
+                  @click="${this.openCalendar}"
+                  data-datetime="${datetime}"
+                >
+                  <div>${moment(datetime).format("YYYY/MM/DD HH:mm")}</div>
+                  <paper-icon-button
+                    class="right-icon"
+                    icon="chevron-right"
+                  ></paper-icon-button>
+                </li>
+              `
+            )}
         </ul>
         <div class="back">
           <paper-icon-button
@@ -137,18 +140,14 @@ export class HistoryPage extends connect(store)(PageViewElement) {
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
     this.user = state.user;
-    if (state.routines && state.routines.current) {
-      this.setAttribute("routine", JSON.stringify(state.routines.current));
-    }
 
-    const newRoutine = state.routines.routines.filter(
-      r => r.id === this.routine.id
-    )[0];
     if (
-      JSON.stringify(this.routine.records) !==
-      JSON.stringify(newRoutine.records)
+      this.user.uid &&
+      state.routines &&
+      state.routines.current &&
+      !this.routine.id
     ) {
-      this.setAttribute("routine", JSON.stringify(newRoutine));
+      this.watchRoutine(state.routines.current.id);
     }
   }
 
@@ -186,6 +185,24 @@ export class HistoryPage extends connect(store)(PageViewElement) {
         { merge: true }
       );
     this.closeCalendar();
+  }
+
+  private watchRoutine(id) {
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(this.user.uid)
+      .collection("routines")
+      .doc(id)
+      .onSnapshot(doc => {
+        if (!doc.exists) {
+          return;
+        }
+        this.setAttribute(
+          "routine",
+          JSON.stringify(Object.assign(doc.data(), { id: doc.id }))
+        );
+      });
   }
 
   private back() {
