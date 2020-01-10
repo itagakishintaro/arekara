@@ -12,7 +12,8 @@ import { setRoutines } from "../actions/routines";
 import user from "../reducers/user.js";
 import routines from "../reducers/routines";
 store.addReducers({
-  user, routines
+  user,
+  routines
 });
 
 // These are the shared styles needed by this element.
@@ -23,6 +24,7 @@ import firebase from "../utils/firebase.js";
 
 // compornents
 import "../utils/loading-image.js";
+import { periodMap, calcPace } from "../utils/utils.js";
 import "./routine-item.js";
 
 @customElement("routine-list")
@@ -35,14 +37,6 @@ export class RoutineList extends connect(store)(LitElement) {
 
   @property({ type: Array })
   private routines = [];
-
-  @property({ type: Object })
-  private periodMap = {
-    day: { display: "日", days: 1 },
-    week: { display: "週", days: 7 },
-    month: { display: "月", days: 30 },
-    year: { display: "年", days: 365 }
-  };
 
   @property({ type: Boolean })
   private watching = false;
@@ -81,7 +75,7 @@ export class RoutineList extends connect(store)(LitElement) {
     if (this.user.uid && !this.watching) {
       this.watchRoutines();
     }
-    if(state.routine && state.routines.routiens){
+    if (state.routine && state.routines.routiens) {
       this.setAttribute("routines", JSON.stringify(state.routines.routines));
     }
   }
@@ -101,27 +95,13 @@ export class RoutineList extends connect(store)(LitElement) {
           const r = doc.data();
           const additional = {
             id: doc.id,
-            pace: this.calcPace(r),
-            periodDisplay: this.periodMap[r.period].display
+            pace: calcPace(r),
+            periodDisplay: periodMap[r.period].display
           };
           return Object.assign(r, additional);
         });
 
         store.dispatch(setRoutines(this.routines));
       });
-  }
-
-  private calcPace(r) {
-    if (!r || !r.records) {
-      return;
-    }
-    const firstDay = Object.keys(r.records).reduce(
-      (pre, cur) => (pre > cur ? cur : pre),
-      moment().format()
-    );
-    const fromFirstDay = moment().diff(moment(firstDay), "days");
-    const times = Object.keys(r.records).length;
-    let period = this.periodMap[r.period].days;
-    return Math.round((times / (fromFirstDay + 1)) * period * 10) / 10;
   }
 }

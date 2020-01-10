@@ -25,6 +25,7 @@ import firebase from "../utils/firebase.js";
 
 // compornents
 import "../utils/loading-image.js";
+import { periodMap, calcPace } from "../utils/utils.js";
 import "./routine-header.js";
 import "./routine-figures.js";
 import "@polymer/paper-dialog/paper-dialog.js";
@@ -198,9 +199,15 @@ export class HistoryPage extends connect(store)(PageViewElement) {
         if (!doc.exists) {
           return;
         }
+        const r = doc.data();
+        const additional = {
+          id: doc.id,
+          pace: calcPace(r),
+          periodDisplay: periodMap[r.period].display
+        };
         this.setAttribute(
           "routine",
-          JSON.stringify(Object.assign(doc.data(), { id: doc.id }))
+          JSON.stringify(Object.assign(r, additional))
         );
       });
   }
