@@ -81,7 +81,7 @@ export class RoutineItem extends connect(store)(LitElement) {
           box-sizing: content-box;
           width: 2em;
           height: 2em;
-          color: var(--app-drawer-selected-color);
+          color: var(--app-dark-text-color);
           margin: 0;
           padding: 0;
         }

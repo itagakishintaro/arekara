@@ -23,10 +23,18 @@ export class RoutineFigures extends LitElement {
           min-width: 80px;
           padding: 15px 10px;
           margin: 0 5px;
-          border-radius: 2px;
-          background-color: var(--app-primary-color);
-          color: var(--app-light-text-color);
+          border-radius: 6px;
+          border: 3px solid var(--app-drawer-selected-color);
+          color: var(--app-dark-text-color);
           text-align: center;
+        }
+        .item-wrapper .item.warning {
+          background-color: var(--paper-orange-100);
+          border-width: 0;
+        }
+        .item-wrapper .item.danger {
+          background-color: var(--paper-red-100);
+          border-width: 0;
         }
 
         .item-wrapper .category {
@@ -45,12 +53,18 @@ export class RoutineFigures extends LitElement {
   protected render() {
     return html`
       <div class="item-wrapper">
-        <div class="item"><p class="category">あれから</p><p class="number">
-          ${this.fromLastDay(this.routine.records)}
-        </p></div>
-        <div class="item"><p class="category">ペース</p><p class="number">
-          ${this.routine.pace}
-        </p></div>
+        <div class="item">
+          <p class="category">あれから</p>
+          <p class="number">
+            ${this.fromLastDay(this.routine.records)}
+          </p>
+        </div>
+        <div class="item ${this.evaluate()}">
+          <p class="category">ペース</p>
+          <p class="number">
+            ${this.routine.pace}
+          </p>
+        </div>
       </div>
     `;
   }
@@ -64,5 +78,19 @@ export class RoutineFigures extends LitElement {
       ""
     );
     return moment().diff(moment(lastDay), "days");
+  }
+
+  private evaluate() {
+    if (!this.routine.pace) {
+      return "ok";
+    }
+    const diff = this.routine.times - this.routine.pace;
+    if (diff < 0) {
+      return "ok";
+    } else if (0.5 < this.routine.pace / this.routine.times) {
+      return "warning";
+    } else {
+      return "danger";
+    }
   }
 }
