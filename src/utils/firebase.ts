@@ -16,14 +16,14 @@ import { navigate } from "../actions/app.js";
 
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDadWj8aO7YdZDCEmOijVRZkejjyva74nM",
-  authDomain: "routine-347f1.firebaseapp.com",
-  databaseURL: "https://routine-347f1.firebaseio.com",
-  projectId: "routine-347f1",
-  storageBucket: "routine-347f1.appspot.com",
-  messagingSenderId: "1026118734552",
-  appId: "1:1026118734552:web:4ae7313bd22597ea41fdad",
-  measurementId: "G-ZJWL965080"
+  apiKey: "AIzaSyAtd1A4qrE4DEmP0_Xg0XudDN_ORDXwH80",
+  authDomain: "arekara-pwa.firebaseapp.com",
+  databaseURL: "https://arekara-pwa.firebaseio.com",
+  projectId: "arekara-pwa",
+  storageBucket: "arekara-pwa.appspot.com",
+  messagingSenderId: "928743824635",
+  appId: "1:928743824635:web:73b0c2a44a844eb3c8245e",
+  measurementId: "G-7EB9QSP2NL"
 };
 
 // Initialize Firebase
