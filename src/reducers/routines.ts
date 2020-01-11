@@ -3,12 +3,13 @@ import { SET_CURRENT, SET_ROUTINES } from '../actions/routines.js';
 import { RootAction } from '../store.js';
 
 export interface RoutinesState {
-  routines: Array,
-  current: Object
+  routines: Array<Object>,
+  current: {id: string}
 }
 
-const INITIAL_STATE: RoutinesState = {};
+const INITIAL_STATE: RoutinesState = {routines: [], current: {id: ""}};
 
+//@ts-ignore
 const routines: Reducer<RoutinesState, RootAction> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case SET_CURRENT:

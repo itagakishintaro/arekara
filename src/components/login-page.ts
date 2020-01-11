@@ -6,12 +6,6 @@ import { connect } from 'pwa-helpers/connect-mixin.js';
 // This element is connected to the Redux store.
 import { store, RootState } from '../store.js';
 
-// These are the actions needed by this element.
-import { update } from '../actions/user.js';
-
-// page
-import { navigate } from '../actions/app.js';
-
 // We are lazy loading its reducer.
 import user from '../reducers/user.js';
 store.addReducers({

@@ -1,3 +1,5 @@
+// import * as moment from "moment";
+
 export const periodMap = {
   day: { display: "日", days: 1 },
   week: { display: "週", days: 7 },
@@ -5,14 +7,19 @@ export const periodMap = {
   year: { display: "年", days: 365 }
 };
 
-export const calcPace = r => {
+export const calcPace = (r: {
+  records: Object;
+  period: "day" | "week" | "month" | "year";
+}) => {
   if (!r || !r.records) {
     return;
   }
   const firstDay = Object.keys(r.records).reduce(
     (pre, cur) => (pre > cur ? cur : pre),
+    //@ts-ignore
     moment().format()
   );
+  //@ts-ignore
   const fromFirstDay = moment().diff(moment(firstDay), "days");
   const times = Object.keys(r.records).length;
   let period = periodMap[r.period].days;

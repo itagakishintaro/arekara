@@ -3,10 +3,12 @@ import { LitElement, html, css, customElement, property } from "lit-element";
 // These are the shared styles needed by this element.
 import { SharedStyles } from "./shared-styles.js";
 
+// import * as moment from "moment";
+
 @customElement("routine-figures")
 export class RoutineFigures extends LitElement {
   @property({ type: Object })
-  private routine = {};
+  private routine = { records: {}, pace: Number, times: Number };
 
   static get styles() {
     return [
@@ -69,7 +71,7 @@ export class RoutineFigures extends LitElement {
     `;
   }
 
-  private fromLastDay(records) {
+  private fromLastDay(records: Object) {
     if (!records || !Object.keys(records)) {
       return;
     }
@@ -77,6 +79,7 @@ export class RoutineFigures extends LitElement {
       (pre, cur) => (pre < cur ? cur : pre),
       ""
     );
+    //@ts-ignore
     return moment().diff(moment(lastDay), "days");
   }
 
@@ -84,10 +87,10 @@ export class RoutineFigures extends LitElement {
     if (!this.routine.pace) {
       return "ok";
     }
-    const diff = this.routine.times - this.routine.pace;
+    const diff = +this.routine.times - +this.routine.pace;
     if (diff < 0) {
       return "ok";
-    } else if (0.5 < this.routine.pace / this.routine.times) {
+    } else if (0.5 < +this.routine.pace / +this.routine.times) {
       return "warning";
     } else {
       return "danger";

@@ -3,7 +3,7 @@ import { LitElement, html, css, customElement, property } from "lit-element";
 import { connect } from "pwa-helpers/connect-mixin.js";
 
 // This element is connected to the Redux store.
-import { store } from "../store.js";
+import { store, RootState } from "../store.js";
 
 // These are the actions needed by this element.
 import { navigate } from "../actions/app.js";
@@ -24,6 +24,8 @@ import { SharedStyles } from "./shared-styles.js";
 import firebase from "../utils/firebase.js";
 
 // compornents
+// import * as moment from "moment";
+
 import "../utils/loading-image.js";
 import "./routine-header.js";
 import "./routine-figures.js";
@@ -40,10 +42,10 @@ export class RoutineItem extends connect(store)(LitElement) {
   private loadingDisplay = "none";
 
   @property({ type: Object })
-  private user = {};
+  private user = { uid: "" };
 
   @property({ type: Object })
-  private routine = {};
+  private routine = { records: Object, id: String };
 
   @property({ type: Boolean })
   private opened = false;
@@ -90,10 +92,10 @@ export class RoutineItem extends connect(store)(LitElement) {
           border-bottom: 1px solid #eee;
         }
         .history-jump-icon {
-          margin:0;
-          padding:0;
-          width:1em;
-          height:1em;
+          margin: 0;
+          padding: 0;
+          width: 1em;
+          height: 1em;
         }
         .history {
           list-style: none;
@@ -128,21 +130,19 @@ export class RoutineItem extends connect(store)(LitElement) {
         <div class="card-header" @click="${this.toggleCollapse}">
           <routine-header .routine="${this.routine}"></routine-header>
           <div>
-            ${
-              this.opened
-                ? html`
-                    <paper-icon-button
-                      class="toggle-icon"
-                      icon="expand-less"
-                    ></paper-icon-button>
-                  `
-                : html`
-                    <paper-icon-button
-                      class="toggle-icon"
-                      icon="expand-more"
-                    ></paper-icon-button>
-                  `
-            }
+            ${this.opened
+              ? html`
+                  <paper-icon-button
+                    class="toggle-icon"
+                    icon="expand-less"
+                  ></paper-icon-button>
+                `
+              : html`
+                  <paper-icon-button
+                    class="toggle-icon"
+                    icon="expand-more"
+                  ></paper-icon-button>
+                `}
           </div>
         </div>
         <div class="card-content">
@@ -150,56 +150,90 @@ export class RoutineItem extends connect(store)(LitElement) {
 
           <iron-collapse id="collapse" opend="false">
             <div class="button-wrapper">
-              <paper-icon-button class="main-icon" icon="check-circle" title="チェック" @click="${
-                this.record
-              }">Record</paper-icon-button>
-              <paper-icon-button class="main-icon" icon="date-range" title="カレンダー登録" @click="${
-                this.openCalendar
-              }">Calendar</paper-icon-button>
-              <paper-icon-button class="main-icon" icon="settings" title="設定" @click="${
-                this.openSetting
-              }">Setting</paper-icon-button>
+              <paper-icon-button
+                class="main-icon"
+                icon="check-circle"
+                title="チェック"
+                @click="${this.record}"
+                >Record</paper-icon-button
+              >
+              <paper-icon-button
+                class="main-icon"
+                icon="date-range"
+                title="カレンダー登録"
+                @click="${this.openCalendar}"
+                >Calendar</paper-icon-button
+              >
+              <paper-icon-button
+                class="main-icon"
+                icon="settings"
+                title="設定"
+                @click="${this.openSetting}"
+                >Setting</paper-icon-button
+              >
             </div>
-            ${
-              this.routine.records
-                ? html`
-                    <div class="history-header">
-                      <span>履歴</span>
-                      <paper-icon-button class="history-jump-icon" icon="launch" @click="${this.moveToHistory}"></paper-icon-button>
-                    </div>
-                    <ul class="history">
-                      ${Object.keys(this.routine.records).sort().reverse().map(
+            ${this.routine.records
+              ? html`
+                  <div class="history-header">
+                    <span>履歴</span>
+                    <paper-icon-button
+                      class="history-jump-icon"
+                      icon="launch"
+                      @click="${this.moveToHistory}"
+                    ></paper-icon-button>
+                  </div>
+                  <ul class="history">
+                    ${Object.keys(this.routine.records)
+                      .sort()
+                      .reverse()
+                      .map(
                         datetime => html`
                           <li class="history-item">
-                            ${moment(datetime).format("YYYY/MM/DD HH:mm")}
+                            ${//formatter
+                              //@ts-ignore
+                            moment(datetime).format("YYYY/MM/DD HH:mm")}
                           </li>
                         `
                       )}
-                    </ul>
-                    ${3 <= Object.keys(this.routine.records).length
-                      ? html`
-                          <div
-                            class="history-more"
-                            @click="${this.moveToHistory}"
-                          >
-                            もっと見る
-                          </div>
-                        `
-                      : ""}
-                  `
-                : ""
-            }
+                  </ul>
+                  ${3 <= Object.keys(this.routine.records).length
+                    ? html`
+                        <div
+                          class="history-more"
+                          @click="${this.moveToHistory}"
+                        >
+                          もっと見る
+                        </div>
+                      `
+                    : ""}
+                `
+              : ""}
           </iron-collapse>
         </div>
       </paper-card>
 
       <paper-dialog id="modalCalendar" class="modal" modal>
-        <paper-input id="datetime" type="datetime-local" value="${moment().format(
-          "YYYY-MM-DD" + "T00:00"
-        )}"></paper-input>
+        <paper-input
+          id="datetime"
+          type="datetime-local"
+          value="${//formatter
+            //@ts-ignore
+          moment().format("YYYY-MM-DD" + "T00:00")}"
+        ></paper-input>
         <div class="button-area">
-          <paper-button raised class="main-btn" @click="${this.recordWithDatetime}">完了</paper-button>
-          <paper-button raised dialog-confirm autofocus @click="${this.closeCalendar}">キャンセル</paper-button>
+          <paper-button
+            raised
+            class="main-btn"
+            @click="${this.recordWithDatetime}"
+            >完了</paper-button
+          >
+          <paper-button
+            raised
+            dialog-confirm
+            autofocus
+            @click="${this.closeCalendar}"
+            >キャンセル</paper-button
+          >
         </div>
       </paper-dialog>
 
@@ -219,57 +253,68 @@ export class RoutineItem extends connect(store)(LitElement) {
 
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
-    this.user = state.user;
+    if (state.user) {
+      this.user = state.user;
+    }
 
-    if (this.shadowRoot.getElementById("modalSetting")) {
-      this.shadowRoot.getElementById("modalSetting").close();
+    if (this.shadowRoot!.getElementById("modalSetting")) {
+      //@ts-ignore
+      this.shadowRoot!.getElementById("modalSetting")!.close();
     }
   }
 
   private toggleCollapse() {
     this.opened = !this.opened;
-    this.shadowRoot.getElementById("collapse").toggle();
+    //@ts-ignore
+    this.shadowRoot!.getElementById("collapse")!.toggle();
   }
 
   private record() {
+    //@ts-ignore
     const datetime = moment().format();
     this.recordToFirebase(datetime);
   }
 
   private recordWithDatetime() {
+    //@ts-ignore
     const datetime = moment(
-      this.shadowRoot.getElementById("datetime").value
+      (<HTMLInputElement>this.shadowRoot!.getElementById("datetime")).value
     ).format();
     this.recordToFirebase(datetime);
     this.closeCalendar();
   }
 
-  private recordToFirebase(datetime) {
+  private recordToFirebase(datetime: String) {
     firebase
       .firestore()
       .collection("users")
       .doc(this.user.uid)
       .collection("routines")
       .doc(this.routine.id)
-      .set({ records: { [datetime]: true } }, { merge: true })
+      .set({ records: { [datetime as string]: true } }, { merge: true })
       .then(() => {
-        this.shadowRoot.getElementById("toastOk").open();
+        //@ts-ignore
+        this.shadowRoot!.getElementById("toastOk")!.open();
       })
       .catch(() => {
-        this.shadowRoot.getElementById("toastNg").open();
+        //@ts-ignore
+        this.shadowRoot!.getElementById("toastNg")!.open();
       });
   }
 
   private openCalendar() {
-    this.shadowRoot.getElementById("modalCalendar").open();
+    //@ts-ignore
+    this.shadowRoot!.getElementById("modalCalendar")!.open();
   }
 
   private closeCalendar() {
-    this.shadowRoot.getElementById("modalCalendar").close();
+    //@ts-ignore
+    this.shadowRoot!.getElementById("modalCalendar")!.close();
   }
 
   private openSetting() {
-    this.shadowRoot.getElementById("modalSetting").open();
+    //@ts-ignore
+    this.shadowRoot!.getElementById("modalSetting")!.open();
   }
 
   private moveToHistory() {

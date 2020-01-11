@@ -3,7 +3,7 @@ import { LitElement, html, css, customElement, property } from "lit-element";
 import { connect } from "pwa-helpers/connect-mixin.js";
 
 // This element is connected to the Redux store.
-import { store } from "../store.js";
+import { store, RootState } from "../store.js";
 
 // These are the actions needed by this element.
 import { setRoutines } from "../actions/routines";
@@ -34,10 +34,10 @@ export class RoutineList extends connect(store)(LitElement) {
   private loadingDisplay = "none";
 
   @property({ type: Object })
-  private user = {};
+  private user = {uid: ""};
 
   @property({ type: Array })
-  private routines = [];
+  private routines = [{times: Number, pace: Number}];
 
   @property({ type: Boolean })
   private watching = false;
@@ -48,7 +48,7 @@ export class RoutineList extends connect(store)(LitElement) {
 
   protected render() {
     this.routines.sort((a, b) => {
-      if (a.times - a.pace < b.times - b.pace) {
+      if (+a.times - +a.pace < +b.times - +b.pace) {
         return 1;
       } else {
         return -1;
@@ -78,9 +78,7 @@ export class RoutineList extends connect(store)(LitElement) {
     if (this.user.uid && !this.watching) {
       this.watchRoutines();
     }
-    if (state.routine && state.routines.routiens) {
-      this.setAttribute("routines", JSON.stringify(state.routines.routines));
-    }
+    this.setAttribute("routines", JSON.stringify(state.routines.routines));
   }
 
   private watchRoutines() {
@@ -90,15 +88,17 @@ export class RoutineList extends connect(store)(LitElement) {
       .collection("users")
       .doc(this.user.uid)
       .collection("routines")
-      .onSnapshot(snapshot => {
+      .onSnapshot( (snapshot: {empty: Boolean, docs: Array<{data: Function, id: String}>}) => {
         if (snapshot.empty) {
           return;
         }
         if(this.routines.length){
-          this.shadowRoot.getElementById("toastOk").open();
+          //@ts-ignore
+          this.shadowRoot!.getElementById("toastOk")!.open();
         }
+        //@ts-ignore
         this.routines = snapshot.docs.map(doc => {
-          const r = doc.data();
+          const r: {records: Object, period: "day"|"week"|"month"|"year"} = doc.data();
           const additional = {
             id: doc.id,
             pace: calcPace(r),

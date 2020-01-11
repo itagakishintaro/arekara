@@ -31,14 +31,14 @@ import { navigate, updateOffline, updateDrawerState } from "../actions/app.js";
 
 // The following line imports the type only - it will be removed by tsc so
 // another import for app-drawer.js is required below.
-import { AppDrawerElement } from "@polymer/app-layout/app-drawer/app-drawer.js";
+// import { AppDrawerElement } from "@polymer/app-layout/app-drawer/app-drawer.js";
 
 // These are the elements needed by this element.
 import "@polymer/app-layout/app-drawer/app-drawer.js";
 import "@polymer/app-layout/app-header/app-header.js";
 import "@polymer/app-layout/app-scroll-effects/effects/waterfall.js";
 import "@polymer/app-layout/app-toolbar/app-toolbar.js";
-import { menuIcon } from "./my-icons.js";
+// import { menuIcon } from "./my-icons.js";
 import "./snack-bar.js";
 
 @customElement("my-app")
@@ -50,7 +50,7 @@ export class MyApp extends connect(store)(LitElement) {
   private _page = "";
 
   @property({ type: Boolean })
-  private _drawerOpened = false;
+  // private _drawerOpened = false;
 
   @property({ type: Boolean })
   private _snackbarOpened = false;
@@ -257,7 +257,7 @@ export class MyApp extends connect(store)(LitElement) {
     this._page = state.app!.page;
     this._offline = state.app!.offline;
     this._snackbarOpened = state.app!.snackbarOpened;
-    this._drawerOpened = state.app!.drawerOpened;
+    // this._drawerOpened = state.app!.drawerOpened;
   }
 
   private backToTop() {

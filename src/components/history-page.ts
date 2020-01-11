@@ -24,6 +24,7 @@ import { SharedStyles } from "./shared-styles.js";
 import firebase from "../utils/firebase.js";
 
 // compornents
+// import * as moment from "moment";
 import "../utils/loading-image.js";
 import { periodMap, calcPace } from "../utils/utils.js";
 import "./routine-header.js";
@@ -38,10 +39,10 @@ export class HistoryPage extends connect(store)(PageViewElement) {
   private loadingDisplay = "none";
 
   @property({ type: Object })
-  private routine = {};
+  private routine = { records: Object, id: "" };
 
   @property({ type: Object })
-  private user = {};
+  private user = { uid: "" };
 
   @property({ type: String })
   private selected = "";
@@ -85,11 +86,11 @@ export class HistoryPage extends connect(store)(PageViewElement) {
           color: var(--app-drawer-selected-color);
         }
         .button-area {
-            padding: 0 24px;
-          }
+          padding: 0 24px;
+        }
         .main-btn {
-            background-color: var(--app-primary-color);
-            color: white;
+          background-color: var(--app-primary-color);
+          color: white;
         }
       `
     ];
@@ -102,30 +103,31 @@ export class HistoryPage extends connect(store)(PageViewElement) {
         <routine-figures .routine="${this.routine}"></routine-figures>
         <div class="history-header">履歴</div>
         <ul class="history">
-          ${
-            this.routine.records
-              ? Object.keys(this.routine.records)
-                  .sort()
-                  .reverse()
-                  .map(
-                    datetime => html`
-                      <li
-                        class="history-item"
-                        @click="${this.openCalendar}"
-                        data-datetime="${datetime}"
-                      >
-                        <div>
-                          ${moment(datetime).format("YYYY/MM/DD HH:mm")}
-                        </div>
-                        <paper-icon-button
-                          class="right-icon"
-                          icon="chevron-right"
-                        ></paper-icon-button>
-                      </li>
-                    `
-                  )
-              : ""
-          }
+          ${this.routine.records
+            ? Object.keys(this.routine.records)
+                .sort()
+                .reverse()
+                .map(
+                  datetime => html`
+                    <li
+                      class="history-item"
+                      @click="${this.openCalendar}"
+                      data-datetime="${datetime}"
+                    >
+                      <div>
+                        
+                        ${
+                          //@ts-ignore
+                          moment(datetime).format("YYYY/MM/DD HH:mm")}
+                      </div>
+                      <paper-icon-button
+                        class="right-icon"
+                        icon="chevron-right"
+                      ></paper-icon-button>
+                    </li>
+                  `
+                )
+            : ""}
         </ul>
         <div class="back">
           <paper-icon-button
@@ -134,13 +136,20 @@ export class HistoryPage extends connect(store)(PageViewElement) {
             @click="${this.back}"
           ></paper-icon-button>
         </div>
-        
       </section>
       <paper-dialog id="modalCalendar" class="modal" modal>
         <paper-input id="datetime" type="datetime-local"></paper-input>
         <div class="button-area">
-          <paper-button raised class="main-btn" @click="${this.updateRecord}">完了</paper-button>
-          <paper-button raised dialog-confirm autofocus @click="${this.closeCalendar}">キャンセル</paper-button>
+          <paper-button raised class="main-btn" @click="${this.updateRecord}"
+            >完了</paper-button
+          >
+          <paper-button
+            raised
+            dialog-confirm
+            autofocus
+            @click="${this.closeCalendar}"
+            >キャンセル</paper-button
+          >
         </div>
       </paper-dialog>
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
@@ -153,9 +162,12 @@ export class HistoryPage extends connect(store)(PageViewElement) {
 
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
-    this.user = state.user;
+    if (state.user) {
+      this.user = state.user;
+    }
 
     if (
+      this.user &&
       this.user.uid &&
       state.routines &&
       state.routines.current &&
@@ -165,23 +177,25 @@ export class HistoryPage extends connect(store)(PageViewElement) {
     }
   }
 
-  private openCalendar(e) {
+  private openCalendar(e: any) {
     this.setAttribute("selected", e.currentTarget.dataset.datetime);
-    this.shadowRoot.getElementById("datetime").value = this.selected.substring(
-      0,
-      16
-    );
-    this.shadowRoot.getElementById("modalCalendar").open();
+    (<HTMLInputElement>(
+      this.shadowRoot!.getElementById("datetime")
+    )).value = this.selected.substring(0, 16);
+    //@ts-ignore
+    this.shadowRoot!.getElementById("modalCalendar")!.open();
   }
 
   private closeCalendar() {
-    this.shadowRoot.getElementById("modalCalendar").close();
+    //@ts-ignore
+    this.shadowRoot!.getElementById("modalCalendar")!.close();
   }
 
   private updateRecord() {
     const oldDatetime = this.selected;
+    //@ts-ignore
     const newDatetime = moment(
-      this.shadowRoot.getElementById("datetime").value
+      (<HTMLInputElement>this.shadowRoot!.getElementById("datetime")).value
     ).format();
     firebase
       .firestore()
@@ -201,18 +215,21 @@ export class HistoryPage extends connect(store)(PageViewElement) {
     this.closeCalendar();
   }
 
-  private watchRoutine(id) {
+  private watchRoutine(id: string) {
     firebase
       .firestore()
       .collection("users")
       .doc(this.user.uid)
       .collection("routines")
       .doc(id)
-      .onSnapshot(doc => {
+      .onSnapshot((doc: { exists: Boolean; data: Function; id: string }) => {
         if (!doc.exists) {
           return;
         }
-        const r = doc.data();
+        const r: {
+          records: Object;
+          period: "day" | "week" | "month" | "year";
+        } = doc.data();
         const additional = {
           id: doc.id,
           pace: calcPace(r),
@@ -222,6 +239,7 @@ export class HistoryPage extends connect(store)(PageViewElement) {
           "routine",
           JSON.stringify(Object.assign(r, additional))
         );
+        console.log("--------------------", this.routine);
       });
   }
 

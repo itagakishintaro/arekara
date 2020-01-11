@@ -6,7 +6,7 @@ import { SharedStyles } from "./shared-styles.js";
 @customElement("routine-header")
 export class RoutineHeader extends LitElement {
   @property({ type: Object })
-  private routine = {};
+  private routine = {name: String, periodDisplay: String, times: Number, records: Object};
 
   static get styles() {
     return [

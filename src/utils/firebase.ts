@@ -8,11 +8,11 @@ import "firebase/firestore";
 import "firebase/analytics";
 
 // This element is connected to the Redux store.
-import { store } from '../store.js';
+import { store } from "../store.js";
 
 // These are the actions needed by this element.
-import { update } from '../actions/user.js';
-import { navigate } from '../actions/app.js';
+import { update } from "../actions/user.js";
+import { navigate } from "../actions/app.js";
 
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
@@ -27,19 +27,20 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
+//@ts-ignore
 const firebaseDefault = firebase.default;
 firebaseDefault.initializeApp(firebaseConfig);
 firebaseDefault.analytics();
 
 // Auth Changed
-firebaseDefault.auth().onAuthStateChanged(async user => {
+firebaseDefault.auth().onAuthStateChanged( (user: {uid: String}) => {
   console.log("onAuthStateChanged", user);
   if (user && user.uid) {
-    store.dispatch(update(user));
-    store.dispatch(navigate("/top"));
+    store.dispatch( update(user) );
+    store.dispatch( navigate("/top") );
   } else {
-    store.dispatch(update({uid: null}));
+    store.dispatch( update({uid: null}) );
   }
-}
+});
 
 export default firebaseDefault;

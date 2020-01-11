@@ -2,8 +2,8 @@ import { Action, ActionCreator } from 'redux';
 export const SET_CURRENT = 'SET_CURRENT';
 export const SET_ROUTINES = 'SET_ROUTINES';
 
-export interface RoutinesActionSetCurrent extends Action<'SET_CURRENT'> {};
-export interface RoutinesActionSetRoutines extends Action<'SET_ROUTINES'> {};
+export interface RoutinesActionSetCurrent extends Action<'SET_CURRENT'> {routine: object};
+export interface RoutinesActionSetRoutines extends Action<'SET_ROUTINES'> {routines: object};
 export type RoutinesAction = RoutinesActionSetCurrent | RoutinesActionSetRoutines;
 
 export const setCurrent: ActionCreator<RoutinesActionSetCurrent> = routine => {

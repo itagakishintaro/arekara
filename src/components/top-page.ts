@@ -21,7 +21,6 @@ store.addReducers({
 import { SharedStyles } from "./shared-styles.js";
 
 // compornents
-import "../utils/loading-image.js";
 import "@polymer/paper-dialog/paper-dialog.js";
 import "@polymer/iron-icons/iron-icons.js";
 import "@polymer/paper-icon-button/paper-icon-button.js";
@@ -34,7 +33,8 @@ export class TopPage extends connect(store)(PageViewElement) {
   private loadingDisplay = "block";
 
   @property({ type: Object })
-  private user = {};
+  //@ts-ignore
+  private user = {uid: ""};
 
   static get styles() {
     return [
@@ -91,7 +91,8 @@ export class TopPage extends connect(store)(PageViewElement) {
   }
 
   private openRoutineRegister() {
-    this.shadowRoot.getElementById("modal").open();
+    //@ts-ignore
+    this.shadowRoot!.getElementById("modal")!.open();
   }
 
   // This is called every time something is updated in the store.
@@ -100,10 +101,13 @@ export class TopPage extends connect(store)(PageViewElement) {
       store.dispatch(navigate("/login"));
     }
     this.setAttribute("loadingDisplay", "none");
-    this.user = state.user;
-
-    if (this.shadowRoot.getElementById("modal")) {
-      this.shadowRoot.getElementById("modal").close();
+    if(state.user){
+      this.user = state.user;
+    }
+    
+    if (this.shadowRoot!.getElementById("modal")) {
+      //@ts-ignore
+      this.shadowRoot!.getElementById("modal")!.close();
     }
   }
 }

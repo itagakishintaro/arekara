@@ -3,7 +3,7 @@ import { LitElement, html, css, customElement, property } from "lit-element";
 import { connect } from "pwa-helpers/connect-mixin.js";
 
 // This element is connected to the Redux store.
-import { store } from "../store.js";
+import { store, RootState } from "../store.js";
 
 // We are lazy loading its reducer.
 import user from "../reducers/user.js";
@@ -18,6 +18,7 @@ import { SharedStyles } from "./shared-styles.js";
 import firebase from "../utils/firebase.js";
 
 // compornents
+// import * as moment from "moment";
 import "../utils/loading-image.js";
 import "@polymer/paper-input/paper-input.js";
 import "@polymer/paper-button/paper-button.js";
@@ -28,10 +29,18 @@ export class RoutineRegister extends connect(store)(LitElement) {
   private loadingDisplay = "none";
 
   @property({ type: Object })
-  private user = {};
+  private user = { uid: "" };
 
   @property({ type: Object, reflect: true })
-  private routine = {};
+  private routine = {
+    name: "",
+    period: "",
+    times: Number,
+    id: "",
+    pace: Number,
+    periodDisplay: "",
+    datetime: ""
+  };
 
   static get styles() {
     return [
@@ -120,28 +129,36 @@ export class RoutineRegister extends connect(store)(LitElement) {
             <div class="inner">
               <select id="period">
                 <option value="">--Please choose an option--</option>
-                ${this.routine.period === "day"
+                ${// formatter
+                //@ts-ignore
+                this.routine.period === "day"
                   ? html`
                       <option value="day" selected>日</option>
                     `
                   : html`
                       <option value="day">日</option>
                     `}
-                ${this.routine.period === "week"
+                ${// formatter
+                //@ts-ignore
+                this.routine.period === "week"
                   ? html`
                       <option value="week" selected>週</option>
                     `
                   : html`
                       <option value="week">週</option>
                     `}
-                ${this.routine.period === "month"
+                ${// formatter
+                //@ts-ignore
+                this.routine.period === "month"
                   ? html`
                       <option value="month" selected>月</option>
                     `
                   : html`
                       <option value="month">月</option>
                     `}
-                ${this.routine.period === "year"
+                ${// formatter
+                //@ts-ignore
+                this.routine.period === "year"
                   ? html`
                       <option value="year" selected>年</option>
                     `
@@ -189,9 +206,13 @@ export class RoutineRegister extends connect(store)(LitElement) {
   }
 
   private registRoutine() {
-    const name = this.shadowRoot.getElementById("name").value;
-    const period = this.shadowRoot.getElementById("period").value;
-    const times = this.shadowRoot.getElementById("times").value;
+    const name = (<HTMLInputElement>this.shadowRoot!.getElementById("name"))
+      .value;
+    const period = (<HTMLInputElement>this.shadowRoot!.getElementById("period"))
+      .value;
+    const times = (<HTMLInputElement>this.shadowRoot!.getElementById("times"))
+      .value;
+    //@ts-ignore
     const datetime = moment().format();
     const routine = { name, period, times, datetime };
     firebase
@@ -206,9 +227,19 @@ export class RoutineRegister extends connect(store)(LitElement) {
     let newRoutine = this.routine;
     delete newRoutine.pace;
     delete newRoutine.periodDisplay;
-    newRoutine.name = this.shadowRoot.getElementById("name").value;
-    newRoutine.period = this.shadowRoot.getElementById("period").value;
-    newRoutine.times = this.shadowRoot.getElementById("times").value;
+    //@ts-ignore
+    newRoutine.name = (<HTMLInputElement>(
+      this.shadowRoot!.getElementById("name")
+    )).value;
+    //@ts-ignore
+    newRoutine.period = (<HTMLInputElement>(
+      this.shadowRoot!.getElementById("period")
+    )).value;
+    //@ts-ignore
+    newRoutine.times = (<HTMLInputElement>(
+      this.shadowRoot!.getElementById("times")
+    )).value;
+    //@ts-ignore
     newRoutine.datetime = moment().format();
     firebase
       .firestore()
@@ -221,6 +252,8 @@ export class RoutineRegister extends connect(store)(LitElement) {
 
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
-    this.user = state.user;
+    if (state.user) {
+      this.user = state.user;
+    }
   }
 }
