@@ -28,6 +28,10 @@ import { periodMap, calcPace } from "../utils/utils.js";
 import "./routine-item.js";
 import "@polymer/paper-toast/paper-toast.js";
 
+interface Modal extends HTMLElement {
+  open: Function,
+  close: Function
+}
 @customElement("routine-list")
 export class RoutineList extends connect(store)(LitElement) {
   @property({ type: String })
@@ -93,8 +97,7 @@ export class RoutineList extends connect(store)(LitElement) {
           return;
         }
         if(this.routines.length){
-          //@ts-ignore
-          this.shadowRoot!.getElementById("toastOk")!.open();
+          (<Modal>this.shadowRoot!.getElementById("toastOk")).open();
         }
         //@ts-ignore
         this.routines = snapshot.docs.map(doc => {

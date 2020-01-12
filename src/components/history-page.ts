@@ -33,6 +33,10 @@ import "@polymer/iron-icons/iron-icons.js";
 import "@polymer/paper-icon-button/paper-icon-button.js";
 
 declare var moment: any;
+interface Modal extends HTMLElement {
+  open: Function,
+  close: Function
+}
 @customElement("history-page")
 export class HistoryPage extends connect(store)(PageViewElement) {
   @property({ type: String })
@@ -188,13 +192,11 @@ export class HistoryPage extends connect(store)(PageViewElement) {
     (<HTMLInputElement>(
       this.shadowRoot!.getElementById("datetime")
     )).value = this.selected.substring(0, 16);
-    //@ts-ignore
-    this.shadowRoot!.getElementById("modalCalendar")!.open();
+    (<Modal>this.shadowRoot!.getElementById("modalCalendar")).open();
   }
 
   private closeCalendar() {
-    //@ts-ignore
-    this.shadowRoot!.getElementById("modalCalendar")!.close();
+    (<Modal>this.shadowRoot!.getElementById("modalCalendar")).close();
   }
 
   private updateRecord() {

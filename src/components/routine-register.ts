@@ -35,11 +35,10 @@ export class RoutineRegister extends connect(store)(LitElement) {
   private routine = {
     name: "",
     period: "",
-    times: Number,
+    times: 0,
     id: "",
-    pace: Number,
+    pace: 0,
     periodDisplay: "",
-    startDatetime: "",
     update: ""
   };
 
@@ -175,15 +174,6 @@ export class RoutineRegister extends connect(store)(LitElement) {
             value="${this.routine.times ? this.routine.times : ""}"
           ></paper-input>
 
-          <paper-input
-            label="Start datetime"
-            id="startDatetime"
-            type="datetime-local"
-            value="${this.routine.startDatetime
-              ? this.routine.startDatetime.substring(0, 16)
-              : moment().format("YYYY-MM-DD" + "T00:00")}"
-          ></paper-input>
-
           <div class="button-area">
             ${this.routine.id
               ? html`
@@ -223,11 +213,8 @@ export class RoutineRegister extends connect(store)(LitElement) {
       .value;
     const times = (<HTMLInputElement>this.shadowRoot!.getElementById("times"))
       .value;
-    const startDatetime = (<HTMLInputElement>(
-      this.shadowRoot!.getElementById("startDatetime")
-    )).value;
     const update = moment().format();
-    const routine = { name, period, times, startDatetime, update };
+    const routine = { name, period, times, update };
     firebase
       .firestore()
       .collection("users")
@@ -240,22 +227,15 @@ export class RoutineRegister extends connect(store)(LitElement) {
     let newRoutine = this.routine;
     delete newRoutine.pace;
     delete newRoutine.periodDisplay;
-    //@ts-ignore
     newRoutine.name = (<HTMLInputElement>(
       this.shadowRoot!.getElementById("name")
     )).value;
-    //@ts-ignore
     newRoutine.period = (<HTMLInputElement>(
       this.shadowRoot!.getElementById("period")
     )).value;
-    //@ts-ignore
-    newRoutine.times = (<HTMLInputElement>(
+    newRoutine.times = Number((<HTMLInputElement>(
       this.shadowRoot!.getElementById("times")
-    )).value;
-    //@ts-ignore
-    const startDatetime = (<HTMLInputElement>(
-      this.shadowRoot!.getElementById("startDatetime")
-    )).value;
+    )).value);
     newRoutine.update = moment().format();
     firebase
       .firestore()

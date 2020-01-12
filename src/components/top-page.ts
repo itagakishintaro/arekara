@@ -27,14 +27,14 @@ import "@polymer/paper-icon-button/paper-icon-button.js";
 import "./routine-register.js";
 import "./routine-list.js";
 
+interface Modal extends HTMLElement {
+  open: Function,
+  close: Function
+}
 @customElement("top-page")
 export class TopPage extends connect(store)(PageViewElement) {
   @property({ type: String })
   private loadingDisplay = "block";
-
-  @property({ type: Object })
-  //@ts-ignore
-  private user = {uid: ""};
 
   static get styles() {
     return [
@@ -91,8 +91,7 @@ export class TopPage extends connect(store)(PageViewElement) {
   }
 
   private openRoutineRegister() {
-    //@ts-ignore
-    this.shadowRoot!.getElementById("modal")!.open();
+    (<Modal>this.shadowRoot!.getElementById("modal")).open();
   }
 
   // This is called every time something is updated in the store.
@@ -101,13 +100,9 @@ export class TopPage extends connect(store)(PageViewElement) {
       store.dispatch(navigate("/login"));
     }
     this.setAttribute("loadingDisplay", "none");
-    if(state.user){
-      this.user = state.user;
-    }
     
     if (this.shadowRoot!.getElementById("modal")) {
-      //@ts-ignore
-      this.shadowRoot!.getElementById("modal")!.close();
+      (<Modal>this.shadowRoot!.getElementById("modal")).close();
     }
   }
 }

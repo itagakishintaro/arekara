@@ -28,7 +28,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 //@ts-ignore
-const firebaseDefault = firebase.default;
+const firebaseDefault = firebase.default?firebase.default:firebase;
 firebaseDefault.initializeApp(firebaseConfig);
 firebaseDefault.analytics();
 

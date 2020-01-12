@@ -57,13 +57,13 @@ export class RoutineFigures extends LitElement {
         <div class="item">
           <p class="category">あれから</p>
           <p class="number">
-            ${Object.keys(this.routine.records).length?this.fromLastDay(this.routine.records):""}
+            ${this.routine.records && Object.keys(this.routine.records).length?this.fromLastDay(this.routine.records):""}
           </p>
         </div>
         <div class="item ${this.evaluate()}">
           <p class="category">ペース</p>
           <p class="number">
-          ${Object.keys(this.routine.records).length?this.routine.pace:""}
+          ${this.routine.records && Object.keys(this.routine.records).length?this.routine.pace:""}
           </p>
         </div>
       </div>

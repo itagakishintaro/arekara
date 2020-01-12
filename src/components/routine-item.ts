@@ -23,9 +23,6 @@ import { SharedStyles } from "./shared-styles.js";
 // Firebase
 import firebase from "../utils/firebase.js";
 
-// compornents
-// import * as moment from "moment";
-
 import "../utils/loading-image.js";
 import "./routine-header.js";
 import "./routine-figures.js";
@@ -36,6 +33,14 @@ import "@polymer/iron-icons/iron-icons.js";
 import "@polymer/paper-icon-button/paper-icon-button.js";
 import "@polymer/paper-toast/paper-toast.js";
 
+declare var moment: any;
+interface Modal extends HTMLElement {
+  open: Function,
+  close: Function
+}
+interface Collapse extends HTMLElement {
+  toggle: Function;
+}
 @customElement("routine-item")
 export class RoutineItem extends connect(store)(LitElement) {
   @property({ type: String })
@@ -172,7 +177,7 @@ export class RoutineItem extends connect(store)(LitElement) {
                 >Setting</paper-icon-button
               >
             </div>
-            ${Object.keys(this.routine.records).length
+            ${ this.routine.records && Object.keys(this.routine.records).length
               ? html`
                   <div class="history-header">
                     <span>履歴</span>
@@ -189,9 +194,7 @@ export class RoutineItem extends connect(store)(LitElement) {
                       .map(
                         datetime => html`
                           <li class="history-item">
-                            ${//formatter
-                              //@ts-ignore
-                            moment(datetime).format("YYYY/MM/DD HH:mm")}
+                            ${moment(datetime).format("YYYY/MM/DD HH:mm")}
                           </li>
                         `
                       )}
@@ -216,9 +219,7 @@ export class RoutineItem extends connect(store)(LitElement) {
         <paper-input
           id="datetime"
           type="datetime-local"
-          value="${//formatter
-            //@ts-ignore
-          moment().format("YYYY-MM-DD" + "T00:00")}"
+          value="${moment().format("YYYY-MM-DD" + "T00:00")}"
         ></paper-input>
         <div class="button-area">
           <paper-button
@@ -258,25 +259,21 @@ export class RoutineItem extends connect(store)(LitElement) {
     }
 
     if (this.shadowRoot!.getElementById("modalSetting")) {
-      //@ts-ignore
-      this.shadowRoot!.getElementById("modalSetting")!.close();
+      (<Modal>this.shadowRoot!.getElementById("modalSetting")).close();
     }
   }
 
   private toggleCollapse() {
     this.opened = !this.opened;
-    //@ts-ignore
-    this.shadowRoot!.getElementById("collapse")!.toggle();
+    (<Collapse>this.shadowRoot!.getElementById("collapse")).toggle();
   }
 
   private record() {
-    //@ts-ignore
     const datetime = moment().format();
     this.recordToFirebase(datetime);
   }
 
   private recordWithDatetime() {
-    //@ts-ignore
     const datetime = moment(
       (<HTMLInputElement>this.shadowRoot!.getElementById("datetime")).value
     ).format();
@@ -293,28 +290,23 @@ export class RoutineItem extends connect(store)(LitElement) {
       .doc(this.routine.id)
       .set({ records: { [datetime as string]: true } }, { merge: true })
       .then(() => {
-        //@ts-ignore
-        this.shadowRoot!.getElementById("toastOk")!.open();
+        (<Modal>this.shadowRoot!.getElementById("toastOk")).open();
       })
       .catch(() => {
-        //@ts-ignore
-        this.shadowRoot!.getElementById("toastNg")!.open();
+        (<Modal>this.shadowRoot!.getElementById("toastNg")).open();
       });
   }
 
   private openCalendar() {
-    //@ts-ignore
-    this.shadowRoot!.getElementById("modalCalendar")!.open();
+    (<Modal>this.shadowRoot!.getElementById("modalCalendar")).open();
   }
 
   private closeCalendar() {
-    //@ts-ignore
-    this.shadowRoot!.getElementById("modalCalendar")!.close();
+    (<Modal>this.shadowRoot!.getElementById("modalCalendar")).close();
   }
 
   private openSetting() {
-    //@ts-ignore
-    this.shadowRoot!.getElementById("modalSetting")!.open();
+    (<Modal>this.shadowRoot!.getElementById("modalSetting")).open();
   }
 
   private moveToHistory() {

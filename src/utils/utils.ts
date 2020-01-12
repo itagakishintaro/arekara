@@ -1,4 +1,4 @@
-// import * as moment from "moment";
+declare var moment: any;
 
 export const periodMap = {
   day: { display: "日", days: 1 },
@@ -16,10 +16,8 @@ export const calcPace = (r: {
   }
   const firstDay = Object.keys(r.records).reduce(
     (pre, cur) => (pre > cur ? cur : pre),
-    //@ts-ignore
     moment().format()
   );
-  //@ts-ignore
   const fromFirstDay = moment().diff(moment(firstDay), "days");
   const times = Object.keys(r.records).length;
   let period = periodMap[r.period].days;
