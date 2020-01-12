@@ -18,11 +18,11 @@ import { SharedStyles } from "./shared-styles.js";
 import firebase from "../utils/firebase.js";
 
 // compornents
-// import * as moment from "moment";
 import "../utils/loading-image.js";
 import "@polymer/paper-input/paper-input.js";
 import "@polymer/paper-button/paper-button.js";
 
+declare var moment: any;
 @customElement("routine-register")
 export class RoutineRegister extends connect(store)(LitElement) {
   @property({ type: String })
@@ -114,7 +114,7 @@ export class RoutineRegister extends connect(store)(LitElement) {
         .delete {
           margin-top: 3em;
           text-align: right;
-          color: var(--app-dark-text-color)
+          color: var(--app-dark-text-color);
         }
       `
     ];
@@ -136,36 +136,28 @@ export class RoutineRegister extends connect(store)(LitElement) {
             <div class="inner">
               <select id="period">
                 <option value="">--Please choose an option--</option>
-                ${// formatter
-                //@ts-ignore
-                this.routine.period === "day"
+                ${this.routine.period === "day"
                   ? html`
                       <option value="day" selected>日</option>
                     `
                   : html`
                       <option value="day">日</option>
                     `}
-                ${// formatter
-                //@ts-ignore
-                this.routine.period === "week"
+                ${this.routine.period === "week"
                   ? html`
                       <option value="week" selected>週</option>
                     `
                   : html`
                       <option value="week">週</option>
                     `}
-                ${// formatter
-                //@ts-ignore
-                this.routine.period === "month"
+                ${this.routine.period === "month"
                   ? html`
                       <option value="month" selected>月</option>
                     `
                   : html`
                       <option value="month">月</option>
                     `}
-                ${// formatter
-                //@ts-ignore
-                this.routine.period === "year"
+                ${this.routine.period === "year"
                   ? html`
                       <option value="year" selected>年</option>
                     `
@@ -187,10 +179,8 @@ export class RoutineRegister extends connect(store)(LitElement) {
             label="Start datetime"
             id="startDatetime"
             type="datetime-local"
-            value="${//formatter
-            this.routine.startDatetime
+            value="${this.routine.startDatetime
               ? this.routine.startDatetime.substring(0, 16)
-              //@ts-ignore
               : moment().format("YYYY-MM-DD" + "T00:00")}"
           ></paper-input>
 
@@ -217,7 +207,7 @@ export class RoutineRegister extends connect(store)(LitElement) {
             >
           </div>
         </form>
-        <div class="delete"> 
+        <div class="delete">
           <a @click="${this.deleteRoutine}">削除する</a>
         </div>
 
@@ -236,7 +226,6 @@ export class RoutineRegister extends connect(store)(LitElement) {
     const startDatetime = (<HTMLInputElement>(
       this.shadowRoot!.getElementById("startDatetime")
     )).value;
-    //@ts-ignore
     const update = moment().format();
     const routine = { name, period, times, startDatetime, update };
     firebase
@@ -267,7 +256,6 @@ export class RoutineRegister extends connect(store)(LitElement) {
     const startDatetime = (<HTMLInputElement>(
       this.shadowRoot!.getElementById("startDatetime")
     )).value;
-    //@ts-ignore
     newRoutine.update = moment().format();
     firebase
       .firestore()

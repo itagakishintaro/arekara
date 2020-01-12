@@ -24,7 +24,6 @@ import { SharedStyles } from "./shared-styles.js";
 import firebase from "../utils/firebase.js";
 
 // compornents
-// import * as moment from "moment";
 import "../utils/loading-image.js";
 import { periodMap, calcPace } from "../utils/utils.js";
 import "./routine-header.js";
@@ -33,6 +32,7 @@ import "@polymer/paper-dialog/paper-dialog.js";
 import "@polymer/iron-icons/iron-icons.js";
 import "@polymer/paper-icon-button/paper-icon-button.js";
 
+declare var moment: any;
 @customElement("history-page")
 export class HistoryPage extends connect(store)(PageViewElement) {
   @property({ type: String })
@@ -120,8 +120,7 @@ export class HistoryPage extends connect(store)(PageViewElement) {
                       data-datetime="${datetime}"
                     >
                       <div>
-                        ${//@ts-ignore
-                        moment(datetime).format("YYYY/MM/DD HH:mm")}
+                        ${moment(datetime).format("YYYY/MM/DD HH:mm")}
                       </div>
                       <paper-icon-button
                         class="right-icon"
@@ -189,7 +188,6 @@ export class HistoryPage extends connect(store)(PageViewElement) {
     (<HTMLInputElement>(
       this.shadowRoot!.getElementById("datetime")
     )).value = this.selected.substring(0, 16);
-    //@ts-ignore
     this.shadowRoot!.getElementById("modalCalendar")!.open();
   }
 
@@ -200,7 +198,6 @@ export class HistoryPage extends connect(store)(PageViewElement) {
 
   private updateRecord() {
     const oldDatetime = this.selected;
-    //@ts-ignore
     const newDatetime = moment(
       (<HTMLInputElement>this.shadowRoot!.getElementById("datetime")).value
     ).format();
@@ -261,7 +258,7 @@ export class HistoryPage extends connect(store)(PageViewElement) {
         { records: { [oldDatetime]: firebase.firestore.FieldValue.delete() } },
         { merge: true }
       );
-      this.closeCalendar();
+    this.closeCalendar();
   }
 
   private back() {

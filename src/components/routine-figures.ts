@@ -3,8 +3,7 @@ import { LitElement, html, css, customElement, property } from "lit-element";
 // These are the shared styles needed by this element.
 import { SharedStyles } from "./shared-styles.js";
 
-// import * as moment from "moment";
-
+declare var moment: any;
 @customElement("routine-figures")
 export class RoutineFigures extends LitElement {
   @property({ type: Object })
@@ -79,7 +78,6 @@ export class RoutineFigures extends LitElement {
       (pre, cur) => (pre < cur ? cur : pre),
       ""
     );
-    //@ts-ignore
     return moment().diff(moment(lastDay), "days");
   }
 
