@@ -188,6 +188,7 @@ export class HistoryPage extends connect(store)(PageViewElement) {
     (<HTMLInputElement>(
       this.shadowRoot!.getElementById("datetime")
     )).value = this.selected.substring(0, 16);
+    //@ts-ignore
     this.shadowRoot!.getElementById("modalCalendar")!.open();
   }
 
