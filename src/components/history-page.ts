@@ -181,7 +181,7 @@ export class HistoryPage extends connect(store)(PageViewElement) {
       this.user.uid &&
       state.routines &&
       state.routines.current &&
-      !this.routine.id
+      (!this.routine.id || this.routine.id !== state.routines.current.id)
     ) {
       this.watchRoutine(state.routines.current.id);
     }
