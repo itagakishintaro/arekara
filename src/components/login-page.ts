@@ -48,17 +48,17 @@ export class LoginPage extends connect(store)(PageViewElement) {
         height: 46px;
         width: 46px;
         margin: 0 24px 0 0;
-        background:url(/images/g_normal.svg) no-repeat;
+        background:url(images/g_normal.svg) no-repeat;
         background-size:contain;
         vertical-align: middle;
       }
 
       .login-button:focus::before {
-        background:url(/images/g_focus.svg) no-repeat;
+        background:url(images/g_focus.svg) no-repeat;
       }
 
       .login-button:active::before {
-        background:url(/images/g_pressed.svg) no-repeat;
+        background:url(images/g_pressed.svg) no-repeat;
       }
       `
     ];

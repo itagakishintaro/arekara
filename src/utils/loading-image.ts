@@ -33,7 +33,7 @@ export class LoadingImage extends LitElement {
   protected render() {
     return html`
       <div id="loading" class="loading" style="display: ${this.loadingDisplay}">
-        <img src="/images/loading.svg" class="loading-img" />
+        <img src="images/loading.svg" class="loading-img" />
       </div>
     `
   }
