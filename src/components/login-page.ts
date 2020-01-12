@@ -86,7 +86,7 @@ export class LoginPage extends connect(store)(PageViewElement) {
     console.log('State Changed', state);
     // firebaseでuser情報がnullのときはuser.uid = nullをセットしている
     // user.uidがないときはfirebaseが認証情報をとれていないとき（つまり、ローディングさせる）
-    if(Object.keys(state.user).length) {
+    if(!state.user || (state.user.uid === null)) {
       this.setAttribute('loadingDisplay', 'none');
     } else {
       this.setAttribute('loadingDisplay', 'block');
