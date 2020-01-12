@@ -31,7 +31,7 @@ export class RoutineHeader extends LitElement {
       <div>
         <b class="title">${this.routine.name}</b>
         <p class="lead">
-          ${this.routine.periodDisplay} ${this.routine.times}ペース
+          ${this.routine.periodDisplay} ${this.routine.times} 目標
         </p>
       </div>
     `;
