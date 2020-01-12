@@ -172,7 +172,7 @@ export class RoutineItem extends connect(store)(LitElement) {
                 >Setting</paper-icon-button
               >
             </div>
-            ${this.routine.records
+            ${Object.keys(this.routine.records).length
               ? html`
                   <div class="history-header">
                     <span>履歴</span>

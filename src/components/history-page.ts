@@ -92,6 +92,11 @@ export class HistoryPage extends connect(store)(PageViewElement) {
           background-color: var(--app-primary-color);
           color: white;
         }
+        .delete {
+          margin-top: 3em;
+          text-align: right;
+          color: var(--app-dark-text-color);
+        }
       `
     ];
   }
@@ -115,10 +120,8 @@ export class HistoryPage extends connect(store)(PageViewElement) {
                       data-datetime="${datetime}"
                     >
                       <div>
-                        
-                        ${
-                          //@ts-ignore
-                          moment(datetime).format("YYYY/MM/DD HH:mm")}
+                        ${//@ts-ignore
+                        moment(datetime).format("YYYY/MM/DD HH:mm")}
                       </div>
                       <paper-icon-button
                         class="right-icon"
@@ -150,6 +153,10 @@ export class HistoryPage extends connect(store)(PageViewElement) {
             @click="${this.closeCalendar}"
             >キャンセル</paper-button
           >
+        </div>
+
+        <div class="delete">
+          <a @click="${this.deleteHistory}">削除する</a>
         </div>
       </paper-dialog>
       <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
@@ -239,8 +246,22 @@ export class HistoryPage extends connect(store)(PageViewElement) {
           "routine",
           JSON.stringify(Object.assign(r, additional))
         );
-        console.log("--------------------", this.routine);
       });
+  }
+
+  private deleteHistory() {
+    const oldDatetime = this.selected;
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(this.user.uid)
+      .collection("routines")
+      .doc(this.routine.id)
+      .set(
+        { records: { [oldDatetime]: firebase.firestore.FieldValue.delete() } },
+        { merge: true }
+      );
+      this.closeCalendar();
   }
 
   private back() {

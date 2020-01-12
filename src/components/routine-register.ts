@@ -39,7 +39,8 @@ export class RoutineRegister extends connect(store)(LitElement) {
     id: "",
     pace: Number,
     periodDisplay: "",
-    datetime: ""
+    startDatetime: "",
+    update: ""
   };
 
   static get styles() {
@@ -109,6 +110,12 @@ export class RoutineRegister extends connect(store)(LitElement) {
           background-color: var(--app-primary-color);
           color: white;
         }
+
+        .delete {
+          margin-top: 3em;
+          text-align: right;
+          color: var(--app-dark-text-color)
+        }
       `
     ];
   }
@@ -176,6 +183,17 @@ export class RoutineRegister extends connect(store)(LitElement) {
             value="${this.routine.times ? this.routine.times : ""}"
           ></paper-input>
 
+          <paper-input
+            label="Start datetime"
+            id="startDatetime"
+            type="datetime-local"
+            value="${//formatter
+            this.routine.startDatetime
+              ? this.routine.startDatetime.substring(0, 16)
+              //@ts-ignore
+              : moment().format("YYYY-MM-DD" + "T00:00")}"
+          ></paper-input>
+
           <div class="button-area">
             ${this.routine.id
               ? html`
@@ -199,6 +217,9 @@ export class RoutineRegister extends connect(store)(LitElement) {
             >
           </div>
         </form>
+        <div class="delete"> 
+          <a @click="${this.deleteRoutine}">削除する</a>
+        </div>
 
         <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
       </section>
@@ -212,9 +233,12 @@ export class RoutineRegister extends connect(store)(LitElement) {
       .value;
     const times = (<HTMLInputElement>this.shadowRoot!.getElementById("times"))
       .value;
+    const startDatetime = (<HTMLInputElement>(
+      this.shadowRoot!.getElementById("startDatetime")
+    )).value;
     //@ts-ignore
-    const datetime = moment().format();
-    const routine = { name, period, times, datetime };
+    const update = moment().format();
+    const routine = { name, period, times, startDatetime, update };
     firebase
       .firestore()
       .collection("users")
@@ -240,7 +264,11 @@ export class RoutineRegister extends connect(store)(LitElement) {
       this.shadowRoot!.getElementById("times")
     )).value;
     //@ts-ignore
-    newRoutine.datetime = moment().format();
+    const startDatetime = (<HTMLInputElement>(
+      this.shadowRoot!.getElementById("startDatetime")
+    )).value;
+    //@ts-ignore
+    newRoutine.update = moment().format();
     firebase
       .firestore()
       .collection("users")
@@ -248,6 +276,16 @@ export class RoutineRegister extends connect(store)(LitElement) {
       .collection("routines")
       .doc(this.routine.id)
       .set(newRoutine);
+  }
+
+  private deleteRoutine() {
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(this.user.uid)
+      .collection("routines")
+      .doc(this.routine.id)
+      .delete();
   }
 
   // This is called every time something is updated in the store.
