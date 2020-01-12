@@ -197,9 +197,13 @@ export class RoutineRegister extends connect(store)(LitElement) {
             >
           </div>
         </form>
-        <div class="delete">
-          <a @click="${this.deleteRoutine}">削除する</a>
-        </div>
+        ${this.routine.id
+          ? html`
+              <div class="delete">
+                <a @click="${this.deleteRoutine}">削除する</a>
+              </div>
+            `
+          : ""}
 
         <loading-image loadingDisplay="${this.loadingDisplay}"></loading-image>
       </section>
@@ -233,9 +237,9 @@ export class RoutineRegister extends connect(store)(LitElement) {
     newRoutine.period = (<HTMLInputElement>(
       this.shadowRoot!.getElementById("period")
     )).value;
-    newRoutine.times = Number((<HTMLInputElement>(
-      this.shadowRoot!.getElementById("times")
-    )).value);
+    newRoutine.times = Number(
+      (<HTMLInputElement>this.shadowRoot!.getElementById("times")).value
+    );
     newRoutine.update = moment().format();
     firebase
       .firestore()
