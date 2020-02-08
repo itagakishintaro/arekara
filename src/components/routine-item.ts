@@ -291,6 +291,7 @@ export class RoutineItem extends connect(store)(LitElement) {
       .set({ records: { [datetime as string]: true } }, { merge: true })
       .then(() => {
         (<Modal>this.shadowRoot!.getElementById("toastOk")).open();
+        this.toggleCollapse();
       })
       .catch(() => {
         (<Modal>this.shadowRoot!.getElementById("toastNg")).open();
